@@ -133,15 +133,4 @@ std::string Grid<std::vector<Point>>::to_vtk(std::string name) {
     return xml.str();
 }
 
-template<typename T>
-void Grid<T>::rescale(size_t Nx_new, size_t Ny_new, int offset_x, int offset_y, T fill_value) {
-    std::vector<std::vector<T>> new_data(Nx_new, std::vector<T>(Ny_new, fill_value));
-    for (int i = 0; i < std::min(Nx_new, sizeX()); i++) {
-        for (int j = 0; j < std::min(Ny_new, sizeY()); j++) {
-            new_data[i + offset_x][j + offset_y] = data[i][j];
-        }
-    }
-    data = new_data;
-}
-
 #endif

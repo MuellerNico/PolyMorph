@@ -6,10 +6,11 @@
 #include <fstream>
 #include <iostream>
 
-#include "reaction.h"
 #include "grid.h"
 #include "geometry.h"
 #include "domain.h"
+
+using Reaction = std::function<std::vector<double>(const std::vector<double>& c, const std::vector<double>& k, double t)>;
 
 struct BoundaryCondition {
     enum class Type {
@@ -77,37 +78,11 @@ struct Solver {
         }
     }
 
-    // rescale all grids
-    void rescale(size_t Nx_new, size_t Ny_new, int offset_x, int offset_y) {
-        c.rescale(Nx_new, Ny_new, offset_x, offset_y, std::vector<double>(NUM_SPECIES, 0.0));
-        D.rescale(Nx_new, Ny_new, offset_x, offset_y, D0);
-        p.rescale(Nx_new, Ny_new, offset_x, offset_y, p0);
-        k.rescale(Nx_new, Ny_new, offset_x, offset_y, k0);
-        parent_idx.rescale(Nx_new, Ny_new, offset_x, offset_y, -2);
-        if (ADVECTION_DILUTION_EN) {
-            velocity.rescale(Nx_new, Ny_new, offset_x, offset_y, Point(0, 0));
-        }
-        this->Nx = Nx_new;
-        this->Ny = Ny_new;
-        std::cout << "rescaled solver to Nx=" << Nx << " Ny=" << Ny << std::endl;
-    }
-
-    /// @param dt time step. allows for independent time stepping between ensemble and solver
+    /// @param dt time step: allows for independent time stepping between ensemble and solver
     void step(double dt) {
-        // resize grids if necessary
-        if (RESIZE_GRID_EN) {
-            if (domain.width() >= (Nx + 1) * dx || domain.height() >= (Ny + 1) * dx
-                || domain.width() <= (Nx - 1) * dx || domain.height() <= (Ny - 1) * dx) {
-                int Nx_new = domain.width() / dx + 2; // include endpoint
-                int Ny_new = domain.height() / dx + 2;
-                rescale(Nx_new, Ny_new, 0, 0); // ToDo: use offset if domain changes by large amount 
-            }
-        }
-
         // precompute
         double two_dx = 2 * dx; 
         double dx2 = dx * dx; 
-
         // Forward Euler with central differences
         #pragma omp parallel for collapse(2)
         for (int i = 0; i < Nx; i++) {
@@ -184,22 +159,6 @@ struct Solver {
         file << "</StructuredGrid>" << std::endl;
         file << "</VTKFile>" << std::endl;
         file.close();          
-    }
-
-    // generate noisy initial condition
-    Grid<std::vector<double>> noisy_ic(double mean, double stddev) {
-        std::default_random_engine generator;
-        generator.seed(RNG_SEED);
-        std::normal_distribution dist(mean, stddev);
-        Grid<std::vector<double>> u0(Nx, Ny, std::vector<double>(NUM_SPECIES, 0.0));
-        for (int i = 0; i < Nx; i++) {
-            for (int j = 0; j < Ny; j++) {
-                for (int sp = 0; sp < NUM_SPECIES; sp++) {
-                    u0(i, j)[sp] = dist(generator);
-                }
-            }
-        }
-        return u0;
     }
 };
 

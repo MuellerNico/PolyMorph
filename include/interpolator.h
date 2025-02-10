@@ -51,14 +51,7 @@ void Interpolator::scatter() {
   istart = std::max(int((ensemble.x0 - solver.domain.x0) / solver.dx) + 1, 0);
   jstart = std::max(int((ensemble.y0 - solver.domain.y0) / solver.dx) + 1, 0);
   iend = std::min(int((ensemble.x1 - solver.domain.x0) / solver.dx), solver.Nx);
-  jend = std::min(int((ensemble.y1 - solver.domain.y0) / solver.dx), solver.Ny); // there could be a fencepost error here
-  
-  #if DEBUG 
-  assert(solver.domain.x0 + istart * solver.dx >= ensemble.x0);
-  assert(solver.domain.y0 + jstart * solver.dx >= ensemble.y0);
-  assert(solver.domain.x0 + iend * solver.dx <= ensemble.x1);
-  assert(solver.domain.y0 + jend * solver.dx <= ensemble.y1);
-  #endif
+  jend = std::min(int((ensemble.y1 - solver.domain.y0) / solver.dx), solver.Ny);
 
   #pragma omp parallel
   {
@@ -97,13 +90,13 @@ void Interpolator::scatter() {
       // set boundary to domain velocity
       #pragma omp for nowait
       for (int i = 0; i < solver.Nx; i++) {
-        solver.velocity(i, 0) = solver.domain.growth_rate[3] * Point(0, -1); // south
-        solver.velocity(i, solver.Ny - 1) = solver.domain.growth_rate[1] * Point(0, 1); // north
+        solver.velocity(i, 0) = Point(0, 0); // south
+        solver.velocity(i, solver.Ny - 1) = Point(0, 0); // north
       }
       #pragma omp for nowait
       for (int j = 0; j < solver.Ny; j++) {
-        solver.velocity(0, j) = solver.domain.growth_rate[2] * Point(-1, 0); // west
-        solver.velocity(solver.Nx - 1, j) = solver.domain.growth_rate[0] * Point(1, 0); // east
+        solver.velocity(0, j) = Point(0, 0); // west
+        solver.velocity(solver.Nx - 1, j) = Point(0, 0); // east
       }
       // background nodes
       #pragma omp for collapse(2)

@@ -4,8 +4,6 @@
 #include <cmath>
 #include <vector>
 
-#define DEBUG false
-
 // -- Original Polyhoop parameters --
 constexpr double h = 0.01; // [L] edge thickness
 constexpr double lmin = 0.02; // [L] minimum edge length
@@ -37,13 +35,12 @@ constexpr double dt = 1e-4; // [T] time step
 
 constexpr std::size_t Nf = 100; // number of output frames
 constexpr std::size_t Ns = 1000; // number of time steps between frames
-constexpr int Nr = 0; // number of rigid polygons (keep as signed int or things will break)
+constexpr int Nr = 0; // number of rigid polygons
 
 constexpr double drmax = h + sh + ss; // maximum interaction distance
 
 // -- New PolyMorph parameters --
 constexpr bool ADVECTION_DILUTION_EN = true; // enable advection-dilution and calculate velocity field
-constexpr bool RESIZE_GRID_EN = false; // enable resizing of grid if domain changes/grows (not optimized. can be computationally expensive)
 constexpr int NUM_SPECIES = 1; // [-] number of diffusable species (defines size of D,p vectors)
 constexpr int NUM_KIN = 1; // [-] number of kinetic coefficients (defines size of k vectors)
 
@@ -59,22 +56,6 @@ const std::vector<double> p_CV = {0.3}; // [-] production rate CV
 const std::vector<double> threshold_mu = {0.001}; // [1/L^2] concentration threshold mean (can use any number of thresholds, but define your ensemble.set_flag accordingly!)
 const std::vector<double> threshold_CV = {0.3}; // [-] threshold CV
 const std::vector<double> anisotropy = {1.0}; // [-] diffusion anisotropy (default 1)
-
-// constexpr int NUM_SPECIES = 3; // [-] number of diffusable species (defines size of D,p vectors)
-// constexpr int NUM_KIN = 3; // [-] number of kinetic coefficients (defines size of k vectors)
-
-// const std::vector<double> k0 =   {1, 1, 0}; // [?] reaction coefficients background
-// const std::vector<double> k_mu = {1, 1, 0}; // [?] reaction coefficients mean
-// const std::vector<double> k_CV = {0.3, 0.3, 0}; // [-] reaction coefficients CV
-// const std::vector<double> D0 =   {32, 32, 32}; // [L^2/T] diffusivity background (recommended to not be zero)
-// const std::vector<double> D_mu = {32, 32, 32}; // [L^2/T] diffusivity mean
-// const std::vector<double> D_CV = {0.3, 0.3, 0.3}; // [-] diffusivity CV
-// const std::vector<double> p0 =   {0, 0, 1}; // [1/(L^2*T)] production rate background (usually zero)
-// const std::vector<double> p_mu = {1, 0, 0}; // [1/(L^2*T)] production rate mean
-// const std::vector<double> p_CV = {0.3, 0, 0}; // [-] production rate CV
-// const std::vector<double> threshold_mu = {0.001, 0, 0}; // [1/L^2] concentration threshold mean (can use any number of thresholds, but define your ensemble.set_flag accordingly!)
-// const std::vector<double> threshold_CV = {0.3, 0, 0}; // [-] threshold CV
-// const std::vector<double> anisotropy = {1.0, 1.0, 1.0}; // [-] diffusion anisotropy (default 1)
 
 constexpr double dx = 0.3; // [L] grid spacing for solver
 constexpr double dist_cutoff_factor = 2.0; // [-] used to cut off lognormal dists at mu*factor to maintain stability. only used for diffusivity D atm.

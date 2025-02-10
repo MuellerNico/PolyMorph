@@ -13,9 +13,6 @@
 
 #include "const.h"
 
-// Macro to include function name in log messages
-#define LOG(message) log(message, __func__)
-
 // grid indices
 struct Index {
   int i; 
@@ -142,20 +139,7 @@ std::vector<double> sample(std::vector<std::lognormal_distribution<>>& dists, st
     return samples;
 }
 
-// write message to logfile
-void log(const std::string& message, const std::string& func) {
-    const std::string function = "[" + func + "]";
-    std::ofstream out; 
-    try {
-        out.open("log.txt", std::ios::app);
-        out << getCurrentDateTime() << "  " << function << "  " << message << std::endl;
-        out.close();
-    } catch (const std::exception& e) {
-        std::cerr << "Error: Could not open log file: " << e.what() << std::endl;
-    }
-}
-
-// writes a nice welcome message to console to lift my mood
+// writes a nice welcome message to console to lift the user's and developer's mood
 void welcome() {
     std::cout << "--------------------------" << std::endl
             << "|  Welcome to PolyMorph  |" << std::endl
@@ -208,7 +192,6 @@ void write_config(std::string prefix = "") {
         << "NUM_SPECIES=" << NUM_SPECIES << std::endl
         << "NUM_KIN=" << NUM_KIN << std::endl
         << "ADVECTION_DILUTION_EN=" << ADVECTION_DILUTION_EN << std::endl
-        << "RESIZE_GRID_EN=" << RESIZE_GRID_EN << std::endl
         << "D0=" << to_string(D0) << std::endl
         << "k0=" << to_string(k0) << std::endl
         << "p0=" << to_string(p0) << std::endl
