@@ -1,4 +1,6 @@
-#include "ensembleController.h"
+#include "ensemble.h"
+#include "solver.h"
+#include "interpolator.h"
 
 int main(int argc, char* argv[]) {
     welcome();
