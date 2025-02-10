@@ -9,19 +9,19 @@ move_files() {
     echo "moving output files to folder ..."
     local timestamp=$(date +%Y-%m-%d_%H-%M)
     mkdir $output/$timestamp
-    mv *.vtp *.vts *.cfg log.txt *.off "$output/$timestamp/"
+    mv *.vtp *.vts *.cfg log.txt "$output/$timestamp/"
 }
 
 cleanup_files() {
     echo "cleaning up leftover output files ..."
-    rm *.vtp *.vts *.cfg log.txt *.off
+    rm *.vtp *.vts *.cfg log.txt #*.off
     make clean
 }
 
 run() {
     echo "compiling src/$1.cpp ..."
     make clean
-    make $1
+    make
     export OMP_NUM_THREADS
     echo "running $1 with $OMP_NUM_THREADS threads... "
     ./polymorph
@@ -32,13 +32,8 @@ if [ "$1" = "c" ]; then
     
 elif [ "$1" = "m" ]; then
     move_files
-
-elif [ -n "$1" ]; then
-    run "$1"
-    move_files
-
 else
-    run "main"
+    run
     move_files
 fi
 

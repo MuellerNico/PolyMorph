@@ -1,18 +1,13 @@
 #include "ensembleController.h"
-/** [Usage example]
-*
-* @brief Standard simulation example. Exponential growth, starting from a single cell
-*/
 
 int main(int argc, char* argv[]) {
     welcome();
     validate_parameters(); // checks that correct number of kinetic parameters are set
     write_config(); // write cfg file to save parameters
     
-    // set up core components
     double L = 30;
     Domain domain(-L/2, -L/2, L/2, L/2); // initialize rectangular domain
-    Ensemble ensemble("ensemble/default.off", domain); // init ensemble with input file
+    Ensemble ensemble("ensemble.off", domain); // init ensemble with input file
     Reaction reaction = Reactions::linearDegradation; // define reaction model
     Solver solver(domain, dx, reaction); // init solver
     Interpolator interpolator(ensemble, solver); // init interpolator
@@ -52,6 +47,6 @@ int main(int argc, char* argv[]) {
         ensemble.output(f); // print frame
         solver.output(f); // print frame
     }
-    ensemble.write_OFF("final_state.off"); // save final state, can reuse as input later
+    //ensemble.write_OFF("final_state.off"); // save final state, can reuse as input later
     goodbye();
 }

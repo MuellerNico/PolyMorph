@@ -1,28 +1,18 @@
-# Compiler
+# Compiler and flags
 CXX = g++
-# Compiler flags
-CXXFLAGS = -Isrc -Iinclude -O3 -fopenmp -g
+CXXFLAGS = -Iinclude -O3 -fopenmp
 
-# Source files directory
-SRC_DIR = src
-
-# Default source
-DEFAULT_SRC = $(SRC_DIR)/main.cpp
-
-# Default executable name
-EXECUTABLE = polymorph
+# Source and executable
+SRC = main.cpp
+EXEC = polymorph
 
 # Default target
-all: $(EXECUTABLE)
+all: $(EXEC)
 
-# Rule for building the default executable
-$(EXECUTABLE): $(DEFAULT_SRC)
+# Build rule
+$(EXEC): $(SRC)
 	$(CXX) $(CXXFLAGS) $< -o $@
 
-# Rule to compile any cpp file to the default executable name
-%: $(SRC_DIR)/%.cpp
-	$(CXX) $(CXXFLAGS) $< -o $(EXECUTABLE)
-
-# Rule to clean up generated files
+# Clean rule
 clean:
-	rm -f $(EXECUTABLE)
+	rm -f $(EXEC)
