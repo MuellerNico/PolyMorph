@@ -39,28 +39,21 @@ int main(int argc, char* argv[]) {
     solver.boundary[1].west = {BoundaryCondition::Type::Dirichlet, 1};
     solver.boundary[1].east = {BoundaryCondition::Type::Dirichlet, 0};
     
-    // // define production lambda (which cells produce which species)
-    // ensemble.is_producing = [](const Polygon& p) { 
-    //     return std::vector<bool> {
-    //         p.polygon_index() == 0, // c0 is produced by the starting cell
-    //         false // c1 is not produced by any cells
-    //     }; 
-    // }; 
     ensemble.polygons[0].k[2] = 1; // set constant production rate for starting cell only
 
     // define lambdas f(c,∇c,t) for concentration effects on cell behavior
+    ensemble.accelerationEffect = [](const Polygon& self, const std::vector<double>& c, const std::vector<Point>& grad_c, double t) { 
+        return 1e2 * grad_c[1]; // move towards gradient of c1
+    };
     int T = Ns*Nf*dt; // final time
     ensemble.cellTypeEffect = [T](const Polygon& self, const std::vector<double>& c, const std::vector<Point>& grad_c, double t) { 
-        if (c[0] < 0.02 && t > T/2) return 1; // differentiate cell type if concentration falls below threshold after T/2
+        if (c[0] > 0 && c[0] < 0.003 && t > T/2) return 1; // differentiate cell type if concentration falls below threshold after T/2
         else if (self.cell_type == 1) return 1; // keep cell type once differentiated
         else return 0; 
     };
     ensemble.growthRateEffect = [](const Polygon& self, const std::vector<double>& c, const std::vector<Point>& grad_c, double t) { 
         if (self.cell_type == 1) return 0.0; // stop growth if cell has differentiated
         else return self.alpha; 
-    };
-    ensemble.accelerationEffect = [](const Polygon& self, const std::vector<double>& c, const std::vector<Point>& grad_c, double t) { 
-        return 0.2 * grad_c[1]; // move towards gradient of c1
     };
     
     ensemble.output(0); // print the initial state

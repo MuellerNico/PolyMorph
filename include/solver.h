@@ -61,7 +61,6 @@ struct Solver {
         this->c = Grid<std::vector<double>>(Nx, Ny, std::vector<double>(NUM_SPECIES, 0.0));
         this->cnew = Grid<std::vector<double>>(Nx, Ny, std::vector<double>(NUM_SPECIES, 0.0));
         this->grad_c = Grid<std::vector<Point>>(Nx, Ny, std::vector<Point>(NUM_SPECIES, Point(0, 0)));
-        this->R = [](const std::vector<double>& c, const std::vector<double>& k, double t) { return std::vector<double>(NUM_SPECIES, 0.0); };
         
         std::cout << "solver dimensions: Nx=" << Nx << " Ny=" << Ny << " dx=" << dx << std::endl;
         std::cout << "domain: [" << domain.x0 << ", " << domain.x1 << "] x [" << domain.y0 << ", " << domain.y1 << "]" << std::endl;

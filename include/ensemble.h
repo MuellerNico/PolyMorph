@@ -43,7 +43,6 @@ struct Ensemble {
   ConcentrationEffect<int> cellTypeEffect = [](const Polygon& self, const std::vector<double>& c, const std::vector<Point>& grad_c, double t) { return 0; };
   ConcentrationEffect<double> maxAreaEffect = [](const Polygon& self, const std::vector<double>& c, const std::vector<Point>& grad_c, double t) { return self.Amax; };
 
-  std::function<std::vector<bool>(const Polygon&)> is_producing = [](const Polygon& p) { return std::vector(NUM_SPECIES, false); };
 
   Ensemble(const char* name, Domain& domain, int seed=RNG_SEED) : t(0), domain(domain) {
     // initialize random number generator
@@ -338,8 +337,8 @@ struct Ensemble {
         const double A0 = polygons[p].A0;
         std::vector<Vertex> vold;
         vold.swap(v);
-        polygons[p] = {{vold[vend[2]]}, polygons[p].phase, 0, 0, sample(Amax_dist, rng), sample(alpha_dist, rng), sample(D_dist, rng, true), sample(k_dist, rng)}; // new polygon 1
-        polygons.push_back({{vold[vend[0]]}, polygons[p].phase, 0, 0, sample(Amax_dist, rng), sample(alpha_dist, rng), sample(D_dist, rng, true), sample(k_dist, rng)}); // new polygon 2
+        polygons[p] = {{vold[vend[2]]}, polygons[p].phase, 0, 0, polygons[p].Amax, polygons[p].alpha, polygons[p].D, polygons[p].k}; // new polygon 1 (inherit properties)
+        polygons.push_back({{vold[vend[0]]}, polygons[p].phase, 0, 0, sample(Amax_dist, rng), sample(alpha_dist, rng), sample(D_dist, rng, true), sample(k_dist, rng)}); // new polygon 2 (sample new properties)
         for (std::size_t i = vend[1]; i != vend[2]; i = (i + 1) % vold.size())
           polygons[p].vertices.push_back(vold[i]);
         for (std::size_t i = vend[3]; i != vend[0]; i = (i + 1) % vold.size())

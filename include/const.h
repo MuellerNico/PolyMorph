@@ -45,11 +45,11 @@ constexpr int NUM_SPECIES = 2; // [-] number of diffusable species (defines size
 constexpr int NUM_KIN = 3; // [-] number of kinetic coefficients (defines size of vector k)
 constexpr int RNG_SEED = 90178009; // random number generator seed
 
-const std::vector<double> k0 =   {1, 1, 0}; // [?] reaction coefficients background (outside of cells)
-const std::vector<double> k_mu = {1, 1, 0}; // [?] reaction coefficients mean
+const std::vector<double> k0 =   {1, 0.1, 0}; // [?] reaction coefficients background (outside of cells)
+const std::vector<double> k_mu = {1, 0.1, 0}; // [?] reaction coefficients mean
 const std::vector<double> k_CV = {0.3, 0, 0}; // [-] reaction coefficients CV
-const std::vector<double> D0 =   {16, 16}; // [L^2/T] diffusivity background (recommended to not be zero)
-const std::vector<double> D_mu = {16, 16}; // [L^2/T] diffusivity mean
+const std::vector<double> D0 =   {32, 32}; // [L^2/T] diffusivity background (recommended to not be zero)
+const std::vector<double> D_mu = {32, 32}; // [L^2/T] diffusivity mean
 const std::vector<double> D_CV = {0.3, 0}; // [-] diffusivity CV
 // const std::vector<double> p0 =   {0, 0}; // [1/(L^2*T)] production rate background (usually zero)
 // const std::vector<double> p_mu = {1, 0}; // [1/(L^2*T)] production rate mean
