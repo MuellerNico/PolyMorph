@@ -43,6 +43,7 @@ struct Ensemble {
   ConcentrationEffect<Point> accelerationEffect = [](const Polygon& self, const std::vector<double>& c, const std::vector<Point>& grad_c, double t) { return Point(0, 0); };
   ConcentrationEffect<double> growthRateEffect = [](const Polygon& self, const std::vector<double>& c, const std::vector<Point>& grad_c, double t) { return self.alpha; };
   ConcentrationEffect<int> cellTypeEffect = [](const Polygon& self, const std::vector<double>& c, const std::vector<Point>& grad_c, double t) { return 0; };
+  ConcentrationEffect<double> maxAreaEffect = [](const Polygon& self, const std::vector<double>& c, const std::vector<Point>& grad_c, double t) { return self.Amax; };
 
   std::function<std::vector<bool>(const Polygon&)> is_producing = [](const Polygon& p) { return std::vector(NUM_SPECIES, false); };
 
@@ -279,10 +280,11 @@ struct Ensemble {
     for (std::size_t p = Nr; p < polygons.size(); ++p)
     {
       auto& v = polygons[p].vertices;
-      
+      double Amax_new = maxAreaEffect(polygons[p], polygons[p].c, polygons[p].grad_c, t);
+
       if (polygons[p].A < Amin || v.size() < 3)
         remove(p--);
-      else if (polygons[p].A > polygons[p].Amax && v.size() > 5)
+      else if (polygons[p].A > Amax_new && v.size() > 5)
       {
         // compute polygon centroid, inertia tensor and division axis
         Point c{0, 0};
