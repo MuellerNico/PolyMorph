@@ -72,11 +72,9 @@ void Interpolator::scatter() {
         if (new_idx(i, j) < Nr) { // is background node
           solver.D(i, j) = D0; // background diffusion
           solver.k(i, j) = k0; // background degradation
-          solver.p(i, j) = p0; // background production (should be zero)
         } else { 
           solver.D(i, j) = ensemble.polygons[new_idx(i, j)].D;
           solver.k(i, j) = ensemble.polygons[new_idx(i, j)].k;
-          solver.p(i, j) = ensemble.polygons[new_idx(i, j)].p;
           if (ADVECTION_DILUTION_EN) {
             solver.velocity(i, j) = interior_IDW_vel_interpolation(grid_point, new_idx(i, j));
           }

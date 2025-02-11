@@ -36,7 +36,6 @@ struct Ensemble {
 
   std::vector<std::lognormal_distribution<>> D_dist = create_lognormal(D_mu, D_CV);
   std::vector<std::lognormal_distribution<>> k_dist = create_lognormal(k_mu, k_CV);
-  std::vector<std::lognormal_distribution<>> p_dist = create_lognormal(p_mu, p_CV);
 
   // lambda functions
   ConcentrationEffect<Point> accelerationEffect = [](const Polygon& self, const std::vector<double>& c, const std::vector<Point>& grad_c, double t) { return Point(0, 0); };
@@ -81,7 +80,6 @@ struct Ensemble {
 
       polygons[p].D = sample(D_dist, rng, true);
       polygons[p].k = sample(k_dist, rng);
-      polygons[p].p = std::vector<double>(NUM_SPECIES, 0);
       polygons[p].c = std::vector<double>(NUM_SPECIES, 0);
 
       for (std::size_t i = Nv - 1, j = 0; j < Nv; i = j++)
@@ -359,8 +357,6 @@ struct Ensemble {
         polygons.back().alpha = polygons.back().alpha;
         polygons[p].c = std::vector<double>(NUM_SPECIES, 0);
         polygons.back().c = std::vector<double>(NUM_SPECIES, 0);
-        polygons[p].p = std::vector<double>(NUM_SPECIES, 0);
-        polygons.back().p = std::vector<double>(NUM_SPECIES, 0);
       }
     }
     
@@ -475,17 +471,6 @@ struct Ensemble {
       double alpha_new = growthRateEffect(polygons[p], polygons[p].c, polygons[p].grad_c, t); 
       if (polygons[p].A > beta * polygons[p].A0 || alpha_new < 0) {
         polygons[p].A0 += alpha_new * dt;
-      }
-      // Update chemical production
-      const std::vector<bool> producing = is_producing(polygons[p]); // which species are produced by the cell
-      if (producing.size() != NUM_SPECIES)
-        std::cerr << "Error: producing vector has wrong size" << std::endl;
-      for (int i = 0; i < NUM_SPECIES; i++) {
-        if (producing[i] && polygons[p].p[i] == 0) {
-          polygons[p].p[i] = sample(p_dist[i], rng);
-        } else if (!producing[i] && polygons[p].p[i] != 0) {
-          polygons[p].p[i] = 0;
-        }
       }
       // Determine cell_type
       polygons[p].cell_type = cellTypeEffect(polygons[p], polygons[p].c, polygons[p].grad_c, t);
@@ -650,14 +635,6 @@ struct Ensemble {
       for (auto& p : polygons)
         for (int i = 0; i < NUM_KIN; i++)
           file << p.k[i] << " ";
-      file << "\n";
-      file << "        </DataArray>\n";
-    }
-    if (Output::p) {
-      file << "        <DataArray type=\"Float64\" Name=\"p\" NumberOfComponents=\"" << NUM_SPECIES << "\" format=\"ascii\">\n";
-      for (auto& p : polygons)
-        for (int i = 0; i < NUM_SPECIES; i++)
-          file << p.p[i] << " ";
       file << "\n";
       file << "        </DataArray>\n";
     }

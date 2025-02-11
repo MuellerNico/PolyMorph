@@ -50,7 +50,6 @@ struct Solver {
     Grid<std::vector<double>> c; // concentrations
     Grid<std::vector<double>> cnew; // temporary grid for updating concentrations
     Grid<std::vector<double>> D; // diffusion coefficients
-    Grid<std::vector<double>> p; // production rates
     Grid<std::vector<double>> k; // kinetic coefficients
     Grid<Point> velocity; // velocity field
     Grid<std::vector<Point>> grad_c; // concentration gradient
@@ -70,7 +69,6 @@ struct Solver {
         // initialize with background values
         parent_idx = Grid<int>(Nx, Ny, -2);
         D = Grid<std::vector<double>>(Nx, Ny, D0);
-        p = Grid<std::vector<double>>(Nx, Ny, p0);
         k = Grid<std::vector<double>>(Nx, Ny, k0);
         
         if (ADVECTION_DILUTION_EN) {
@@ -103,7 +101,7 @@ struct Solver {
                         // calculate diffusion term
                         const double diffusion = D(i, j)[sp] / dx2 * (e + w + anisotropy[sp] * (n + s) - 2 * (1 + anisotropy[sp]) * c(i, j)[sp]);
                         // update grid point
-                        cnew(i, j)[sp] = c(i, j)[sp] + dt * (diffusion + reaction[sp] + p(i, j)[sp]); 
+                        cnew(i, j)[sp] = c(i, j)[sp] + dt * (diffusion + reaction[sp]); 
                         grad_c(i, j)[sp] = {(e - w) / two_dx, (n - s) / two_dx};
                         
                         if(ADVECTION_DILUTION_EN) {
@@ -151,7 +149,6 @@ struct Solver {
         if (Output::parent_idx) file << parent_idx.to_vtk("parent_idx");
         if (Output::D) file << D.to_vtk("D");
         if (Output::k) file << k.to_vtk("k");
-        if (Output::p) file << p.to_vtk("p");
         if (Output::velocity && ADVECTION_DILUTION_EN) file << velocity.to_vtk("velocity");
         
         file << "</PointData>" << std::endl;    // end of point data

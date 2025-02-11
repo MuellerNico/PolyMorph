@@ -43,8 +43,7 @@ std::string getCurrentDateTime() {
 
 void validate_parameters() {
     assert(D_mu.size() == NUM_SPECIES && D_CV.size() == NUM_SPECIES);
-    assert(p_mu.size() == NUM_SPECIES && p_CV.size() == NUM_SPECIES);
-    assert(D0.size() == NUM_SPECIES && p0.size() == NUM_SPECIES);
+    assert(D0.size() == NUM_SPECIES);
     assert(k_mu.size() == NUM_KIN && k_CV.size() == NUM_KIN);
     assert(k0.size() == NUM_KIN);
     assert(anisotropy.size() == NUM_SPECIES);
@@ -193,13 +192,10 @@ void write_config(std::string prefix = "") {
         << "ADVECTION_DILUTION_EN=" << ADVECTION_DILUTION_EN << std::endl
         << "D0=" << to_string(D0) << std::endl
         << "k0=" << to_string(k0) << std::endl
-        << "p0=" << to_string(p0) << std::endl
         << "D_mu=" << to_string(D_mu) << std::endl
         << "k_mu=" << to_string(k_mu) << std::endl
-        << "p_mu=" << to_string(p_mu) << std::endl
         << "D_CV=" << to_string(D_CV) << std::endl
         << "k_CV=" << to_string(k_CV) << std::endl
-        << "p_CV=" << to_string(p_CV) << std::endl
         << "dx=" << dx << std::endl
         << "dt=" << dt << std::endl
         << "Nf=" << Nf << std::endl
@@ -211,7 +207,6 @@ void write_config(std::string prefix = "") {
         << "RNG_SEED=" << RNG_SEED << std::endl
         << "Output::c=" << Output::c << std::endl
         << "Output::D=" << Output::D << std::endl
-        << "Output::p=" << Output::p << std::endl
         << "Output::k=" << Output::k << std::endl
         << "Output::parent_idx=" << Output::parent_idx << std::endl
         << "Output::cell_type=" << Output::cell_type << std::endl

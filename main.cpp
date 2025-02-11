@@ -24,7 +24,7 @@ int main(int argc, char* argv[]) {
     // define reaction model R(c,k,t)
     Reaction linearDegradation = [](const std::vector<double>& c, const std::vector<double>& k, double t) {
         return std::vector<double> {
-            - k[0] * c[0], // linear degradation of c0
+            - k[0] * c[0] + k[2], // linear degradation plus constant production of c0
             - k[1] * c[1]  // linear degradation of c1
         };
     }; 
@@ -39,13 +39,14 @@ int main(int argc, char* argv[]) {
     solver.boundary[1].west = {BoundaryCondition::Type::Dirichlet, 1};
     solver.boundary[1].east = {BoundaryCondition::Type::Dirichlet, 0};
     
-    // define production lambda (which cells produce which species)
-    ensemble.is_producing = [](const Polygon& p) { 
-        return std::vector<bool> {
-            p.polygon_index() == 0, // c0 is produced by the starting cell
-            false // c1 is not produced by any cells
-        }; 
-    }; 
+    // // define production lambda (which cells produce which species)
+    // ensemble.is_producing = [](const Polygon& p) { 
+    //     return std::vector<bool> {
+    //         p.polygon_index() == 0, // c0 is produced by the starting cell
+    //         false // c1 is not produced by any cells
+    //     }; 
+    // }; 
+    ensemble.polygons[0].k[2] = 1; // set constant production rate for starting cell only
 
     // define lambdas f(c,∇c,t) for concentration effects on cell behavior
     int T = Ns*Nf*dt; // final time
