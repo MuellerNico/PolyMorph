@@ -147,7 +147,7 @@ struct Solver {
         file << "<PointData Scalars=\"scalars\">" << std::endl; // start point data
         
         if (Output::c) file << c.to_vtk("c");
-        if (Output::grad_c) file << grad_c.to_vtk("grad_c");
+        if (Output::grad_c) file << grad_c.to_vtk("gradient");
         if (Output::parent_idx) file << parent_idx.to_vtk("parent_idx");
         if (Output::D) file << D.to_vtk("D");
         if (Output::k) file << k.to_vtk("k");

@@ -47,7 +47,6 @@ void validate_parameters() {
     assert(D0.size() == NUM_SPECIES && p0.size() == NUM_SPECIES);
     assert(k_mu.size() == NUM_KIN && k_CV.size() == NUM_KIN);
     assert(k0.size() == NUM_KIN);
-    assert(threshold_mu.size() == threshold_CV.size());
     assert(anisotropy.size() == NUM_SPECIES);
 }
 
@@ -144,13 +143,13 @@ void welcome() {
     std::cout << "--------------------------" << std::endl
             << "|  Welcome to PolyMorph  |" << std::endl
             << "--------------------------" << std::endl;
+    std::cout << "OMP max threads = " << omp_get_max_threads() << std::endl;
     std::cout << "simulation started at " << getCurrentDateTime() << std::endl;
-    std::cout << "max threads = " << omp_get_max_threads() << std::endl;
 }
 
 void goodbye() {
     std::cout << "Simulation finished at " << getCurrentDateTime() << std::endl;
-    std::cout << "Goodbye." << std::endl; 
+    std::cout << "Goodbye!" << std::endl; 
 }
 
 // saving simluations parameters
@@ -198,11 +197,9 @@ void write_config(std::string prefix = "") {
         << "D_mu=" << to_string(D_mu) << std::endl
         << "k_mu=" << to_string(k_mu) << std::endl
         << "p_mu=" << to_string(p_mu) << std::endl
-        << "threshold_mu=" << to_string(threshold_mu) << std::endl 
         << "D_CV=" << to_string(D_CV) << std::endl
         << "k_CV=" << to_string(k_CV) << std::endl
         << "p_CV=" << to_string(p_CV) << std::endl
-        << "threshold_CV=" << to_string(threshold_CV) << std::endl
         << "dx=" << dx << std::endl
         << "dt=" << dt << std::endl
         << "Nf=" << Nf << std::endl
@@ -217,7 +214,6 @@ void write_config(std::string prefix = "") {
         << "Output::p=" << Output::p << std::endl
         << "Output::k=" << Output::k << std::endl
         << "Output::parent_idx=" << Output::parent_idx << std::endl
-        << "Output::threshold=" << Output::threshold << std::endl
         << "Output::cell_type=" << Output::cell_type << std::endl
         << "Output::velocity=" << Output::velocity << std::endl;
         // expand if more parameters become relevant

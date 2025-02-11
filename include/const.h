@@ -34,35 +34,33 @@ constexpr double cc = 30; // [1/T] collision damping rate
 constexpr double dt = 1e-4; // [T] time step
 
 constexpr std::size_t Nf = 100; // number of output frames
-constexpr std::size_t Ns = 1000; // number of time steps between frames
+constexpr std::size_t Ns = 1200; // number of time steps between frames
 constexpr int Nr = 0; // number of rigid polygons
 
 constexpr double drmax = h + sh + ss; // maximum interaction distance
 
 // -- New PolyMorph parameters --
-constexpr bool ADVECTION_DILUTION_EN = true; // enable advection-dilution and calculate velocity field
-constexpr int NUM_SPECIES = 1; // [-] number of diffusable species (defines size of D,p vectors)
-constexpr int NUM_KIN = 1; // [-] number of kinetic coefficients (defines size of k vectors)
+constexpr bool ADVECTION_DILUTION_EN = false; // enable advection-dilution and calculate velocity field
+constexpr int NUM_SPECIES = 2; // [-] number of diffusable species (defines size of vectors D,p,c,grad_c)
+constexpr int NUM_KIN = 2; // [-] number of kinetic coefficients (defines size of vector k)
+constexpr int RNG_SEED = 90178009; // random number generator seed
 
-const std::vector<double> k0 =   {1}; // [?] reaction coefficients background
-const std::vector<double> k_mu = {1}; // [?] reaction coefficients mean
-const std::vector<double> k_CV = {0.3}; // [-] reaction coefficients CV
-const std::vector<double> D0 =   {32}; // [L^2/T] diffusivity background (recommended to not be zero)
-const std::vector<double> D_mu = {32}; // [L^2/T] diffusivity mean
-const std::vector<double> D_CV = {0.3}; // [-] diffusivity CV
-const std::vector<double> p0 =   {0}; // [1/(L^2*T)] production rate background (usually zero)
-const std::vector<double> p_mu = {1}; // [1/(L^2*T)] production rate mean
-const std::vector<double> p_CV = {0.3}; // [-] production rate CV
-const std::vector<double> threshold_mu = {0.001}; // [1/L^2] concentration threshold mean (can use any number of thresholds, but define your ensemble.set_flag accordingly!)
-const std::vector<double> threshold_CV = {0.3}; // [-] threshold CV
-const std::vector<double> anisotropy = {1.0}; // [-] diffusion anisotropy (default 1)
+const std::vector<double> k0 =   {1, 1}; // [?] reaction coefficients background (outside of cells)
+const std::vector<double> k_mu = {1, 1}; // [?] reaction coefficients mean
+const std::vector<double> k_CV = {0.3, 0}; // [-] reaction coefficients CV
+const std::vector<double> D0 =   {16, 16}; // [L^2/T] diffusivity background (recommended to not be zero)
+const std::vector<double> D_mu = {16, 16}; // [L^2/T] diffusivity mean
+const std::vector<double> D_CV = {0.3, 0}; // [-] diffusivity CV
+const std::vector<double> p0 =   {0, 0}; // [1/(L^2*T)] production rate background (usually zero)
+const std::vector<double> p_mu = {1, 0}; // [1/(L^2*T)] production rate mean
+const std::vector<double> p_CV = {0, 0}; // [-] production rate CV
+const std::vector<double> anisotropy = {1.0, 1.0}; // [-] diffusion anisotropy (default 1)
 
 constexpr double dx = 0.3; // [L] grid spacing for solver
+
 constexpr double dist_cutoff_factor = 2.0; // [-] used to cut off lognormal dists at mu*factor to maintain stability. only used for diffusivity D atm.
 constexpr double IDW_cutoff_radius = 3.0 * Amax_mu; // [L] radius for IDW interpolation of velocity field. Coupled to Amax to account for length scale
 constexpr double domain_bd_stiffness = kr / 2; // [1/T^2] domain boundary stiffness (too high can cause instabilities)
-
-constexpr int RNG_SEED = 90178009; // random number generator seed
 
 // choose what to write to VTK files for visualization/debugging. disable things to save space 
 namespace Output { 
@@ -71,7 +69,6 @@ namespace Output {
     constexpr bool p = true; // production rate
     constexpr bool k = true; // kinetic coefficients
     constexpr bool parent_idx = true; // polygon idx grid
-    constexpr bool threshold = false; // threshold
     constexpr bool cell_type = true; // boolean polygon cell_type 
     constexpr bool velocity = true; // velocity field
     constexpr bool grad_c = true; // concentration gradient

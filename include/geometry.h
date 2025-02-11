@@ -56,7 +56,7 @@ struct Polygon {
   std::vector<Vertex> vertices; // vertex list in counter-clockwise orientation
   bool phase; // phase of the enclosed medium
   double A0, A, Amax, alpha; // target, actual & division area, area growth rate
-  std::vector<double> D, k, p, threshold; // diffusion constant, kinetic coefficients, production rate, threshold
+  std::vector<double> D, k, p; // diffusion constant, kinetic coefficients, production rate
   std::vector<double> c = std::vector<double>(NUM_SPECIES, 0); // local concentration
   std::vector<Point> grad_c = std::vector<Point>(NUM_SPECIES, Point(0, 0)); // local concentration gradient
   std::vector<Index> children; // stores the indices of grid points (nodes) that lie inside the polygon
@@ -99,7 +99,7 @@ struct Polygon {
   }
 
   // returns the index of the polygon in the global ensemble list
-  size_t global_index() const {
+  size_t polygon_index() const {
     return vertices[0].p; // vertices store the global polygon index they belong to
   }
 };

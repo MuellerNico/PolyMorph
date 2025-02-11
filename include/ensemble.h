@@ -37,7 +37,6 @@ struct Ensemble {
   std::vector<std::lognormal_distribution<>> D_dist = create_lognormal(D_mu, D_CV);
   std::vector<std::lognormal_distribution<>> k_dist = create_lognormal(k_mu, k_CV);
   std::vector<std::lognormal_distribution<>> p_dist = create_lognormal(p_mu, p_CV);
-  std::vector<std::lognormal_distribution<>> threshold_dist = create_lognormal(threshold_mu, threshold_CV);
 
   // lambda functions
   ConcentrationEffect<Point> accelerationEffect = [](const Polygon& self, const std::vector<double>& c, const std::vector<Point>& grad_c, double t) { return Point(0, 0); };
@@ -82,7 +81,6 @@ struct Ensemble {
 
       polygons[p].D = sample(D_dist, rng, true);
       polygons[p].k = sample(k_dist, rng);
-      polygons[p].threshold = sample(threshold_dist, rng);
       polygons[p].p = std::vector<double>(NUM_SPECIES, 0);
       polygons[p].c = std::vector<double>(NUM_SPECIES, 0);
 
@@ -357,8 +355,6 @@ struct Ensemble {
         polygons[p].A0 = A0 * polygons[p].A / (polygons[p].A + polygons.back().A);
         polygons.back().A0 = A0 - polygons[p].A0;
         
-        polygons[p].threshold = sample(threshold_dist, rng);
-        polygons.back().threshold = sample(threshold_dist, rng);
         polygons[p].alpha = polygons[p].alpha;
         polygons.back().alpha = polygons.back().alpha;
         polygons[p].c = std::vector<double>(NUM_SPECIES, 0);
@@ -662,14 +658,6 @@ struct Ensemble {
       for (auto& p : polygons)
         for (int i = 0; i < NUM_SPECIES; i++)
           file << p.p[i] << " ";
-      file << "\n";
-      file << "        </DataArray>\n";
-    }
-    if (Output::threshold) {
-      file << "        <DataArray type=\"Float64\" Name=\"threshold\" NumberOfComponents=\"" << NUM_SPECIES << "\" format=\"ascii\">\n";
-      for (auto& p : polygons)
-        for (int i = 0; i < NUM_SPECIES; i++)
-          file << p.threshold[i] << " ";
       file << "\n";
       file << "        </DataArray>\n";
     }
