@@ -39,10 +39,13 @@ struct Ensemble {
 
   // lambda functions
   ConcentrationEffect<Point> accelerationEffect = [](const Polygon& self, const std::vector<double>& c, const std::vector<Point>& grad_c, double t) { return Point(0, 0); };
-  ConcentrationEffect<double> growthRateEffect = [](const Polygon& self, const std::vector<double>& c, const std::vector<Point>& grad_c, double t) { return self.alpha; };
   ConcentrationEffect<int> cellTypeEffect = [](const Polygon& self, const std::vector<double>& c, const std::vector<Point>& grad_c, double t) { return 0; };
+  ConcentrationEffect<double> growthRateEffect = [](const Polygon& self, const std::vector<double>& c, const std::vector<Point>& grad_c, double t) { return self.alpha; };
   ConcentrationEffect<double> maxAreaEffect = [](const Polygon& self, const std::vector<double>& c, const std::vector<Point>& grad_c, double t) { return self.Amax; };
-
+  ConcentrationEffect<double> areaStiffnessEffect = [](const Polygon& self, const std::vector<double>& c, const std::vector<Point>& grad_c, double t) { return ka; };
+  ConcentrationEffect<double> lineTensionEffect = [](const Polygon& self, const std::vector<double>& c, const std::vector<Point>& grad_c, double t) { return gam; };
+  ConcentrationEffect<double> edgeContractilityStiffnessEffect = [](const Polygon& self, const std::vector<double>& c, const std::vector<Point>& grad_c, double t) { return kl; };
+  ConcentrationEffect<double> bendingStiffnessEffect = [](const Polygon& self, const std::vector<double>& c, const std::vector<Point>& grad_c, double t) { return kb; };
 
   Ensemble(const char* name, Domain& domain, int seed=RNG_SEED) : t(0), domain(domain) {
     // initialize random number generator
@@ -405,10 +408,16 @@ struct Ensemble {
         const double l1 = e1.length();
         const double l2 = e2.length();
         const Point n = (e1 + e2).cross(); // unnormalized inward normal vector
+       
+        const double ka_new = areaStiffnessEffect(polygons[p], polygons[p].c, polygons[p].grad_c, t);
+        const double gam_new = lineTensionEffect(polygons[p], polygons[p].c, polygons[p].grad_c, t);
+        const double kl_new = edgeContractilityStiffnessEffect(polygons[p], polygons[p].c, polygons[p].grad_c, t); 
+        const double kb_new = bendingStiffnessEffect(polygons[p], polygons[p].c, polygons[p].grad_c, t);
+
         v[i].a = {0, -gl}; // edge gravitational acceleration
-        v[i].a.add(ka / 2 * (polygons[p].A - polygons[p].A0), n); // area compressibility
-        v[i].a.add(-kl, (ls / v[k].l0 - 1 / l1) * e1 - (ls / v[i].l0 - 1 / l2) * e2); // edge contractility
-        v[i].a.add(-gam, (1 / l1) * e1 - (1 / l2) * e2); // line tension
+        v[i].a.add(ka_new / 2 * (polygons[p].A - polygons[p].A0), n); // area compressibility
+        v[i].a.add(-kl_new, (ls / v[k].l0 - 1 / l1) * e1 - (ls / v[i].l0 - 1 / l2) * e2); // edge contractility
+        v[i].a.add(-gam_new, (1 / l1) * e1 - (1 / l2) * e2); // line tension
         v[i].a.add(rho * g / 6 * (2*polygons[p].phase-1), (v[k].r.y + v[i].r.y + v[j].r.y) * n - Point{0, e1 ^ e2}); // hydrostatic pressure
         v[i].a.add(-cv - rho * cd / 4 * std::abs(v[i].v * n), v[i].v); // viscous damping and drag
 
@@ -423,7 +432,7 @@ struct Ensemble {
         const double a0 = (e0 ^ e1) / b0;
         const double a1 = (e1 ^ e2) / b1;
         const double a2 = (e2 ^ e3) / b2;
-        v[i].a.add(-8 * kb, (a0 / ((l0 + l1) * b0)) * (e0.cross() - a0 * e0)
+        v[i].a.add(-8 * kb_new, (a0 / ((l0 + l1) * b0)) * (e0.cross() - a0 * e0)
                           - (a1 / ((l1 + l2) * b1)) * (n - a1 * (e1 - e2))
                           + (a2 / ((l2 + l3) * b2)) * (e3.cross() + a2 * e3));
 
