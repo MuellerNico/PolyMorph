@@ -62,8 +62,8 @@ struct Solver {
         this->cnew = Grid<std::vector<double>>(Nx, Ny, std::vector<double>(NUM_SPECIES, 0.0));
         this->grad_c = Grid<std::vector<Point>>(Nx, Ny, std::vector<Point>(NUM_SPECIES, Point(0, 0)));
         
-        std::cout << "solver dimensions: Nx=" << Nx << " Ny=" << Ny << " dx=" << dx << std::endl;
-        std::cout << "domain: [" << domain.x0 << ", " << domain.x1 << "] x [" << domain.y0 << ", " << domain.y1 << "]" << std::endl;
+        std::cout << "Domain: [" << domain.x0 << ", " << domain.x1 << "] x [" << domain.y0 << ", " << domain.y1 << "]" << std::endl;
+        std::cout << "FDM solver dimensions: Nx=" << Nx << " Ny=" << Ny << " dx=" << dx << std::endl;
 
         // initialize with background values
         parent_idx = Grid<int>(Nx, Ny, -2);
@@ -71,7 +71,7 @@ struct Solver {
         k = Grid<std::vector<double>>(Nx, Ny, k0);
         
         if (ADVECTION_DILUTION_EN) {
-            velocity = Grid<Point>(Nx, Ny, Point(0, 0));
+            velocity = Grid<Point>(Nx, Ny, Point(0, 0)); // init to zero (also serves as boundary condition)
         }
     }
 

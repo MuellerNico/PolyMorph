@@ -143,7 +143,7 @@ void welcome() {
             << "|  Welcome to PolyMorph  |" << std::endl
             << "--------------------------" << std::endl;
     std::cout << "OMP max threads = " << omp_get_max_threads() << std::endl;
-    std::cout << "simulation started at " << getCurrentDateTime() << std::endl;
+    std::cout << "Simulation started at " << getCurrentDateTime() << std::endl;
 }
 
 void goodbye() {

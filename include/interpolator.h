@@ -68,35 +68,26 @@ void Interpolator::scatter() {
         else {
           new_idx(i, j) = find_parent(grid_point);
         }
-        // scatter values ToDo: benchmark and probably remove this
+        // scatter values to grid
         if (new_idx(i, j) < Nr) { // is background node
           solver.D(i, j) = D0; // background diffusion
-          solver.k(i, j) = k0; // background degradation
+          solver.k(i, j) = k0; // background kinetic coefficients
         } else { 
           solver.D(i, j) = ensemble.polygons[new_idx(i, j)].D;
           solver.k(i, j) = ensemble.polygons[new_idx(i, j)].k;
           if (ADVECTION_DILUTION_EN) {
-            solver.velocity(i, j) = interior_IDW_vel_interpolation(grid_point, new_idx(i, j));
+            if (0 <= i && i < solver.Nx - 1 && 0 <= j && j < solver.Ny - 1) { // leave boundary nodes at zero
+              solver.velocity(i, j) = interior_IDW_vel_interpolation(grid_point, new_idx(i, j));
+            }
           }
         }
       }
     }
-    solver.parent_idx.parallel_copy_from(new_idx); // ToDo: could mby do this inplace?
+    // update parent_idx
+    solver.parent_idx.parallel_copy_from(new_idx);
 
-    // interpolate remaining velocity field
+    // interpolate remaining velocity field at background nodes
     if (ADVECTION_DILUTION_EN) {
-      // set boundary to domain velocity
-      #pragma omp for nowait
-      for (int i = 0; i < solver.Nx; i++) {
-        solver.velocity(i, 0) = Point(0, 0); // south
-        solver.velocity(i, solver.Ny - 1) = Point(0, 0); // north
-      }
-      #pragma omp for nowait
-      for (int j = 0; j < solver.Ny; j++) {
-        solver.velocity(0, j) = Point(0, 0); // west
-        solver.velocity(solver.Nx - 1, j) = Point(0, 0); // east
-      }
-      // background nodes
       #pragma omp for collapse(2)
       for (int i = 1; i < solver.Nx - 1; i++) {
         for (int j = 1; j < solver.Ny - 1; j++) {
