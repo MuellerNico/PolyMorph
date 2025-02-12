@@ -51,22 +51,18 @@ const std::vector<double> k_CV = {0.3, 0, 0}; // [-] reaction coefficients CV
 const std::vector<double> D0 =   {32, 32}; // [L^2/T] diffusivity background (recommended to not be zero)
 const std::vector<double> D_mu = {32, 32}; // [L^2/T] diffusivity mean
 const std::vector<double> D_CV = {0.3, 0}; // [-] diffusivity CV
-// const std::vector<double> p0 =   {0, 0}; // [1/(L^2*T)] production rate background (usually zero)
-// const std::vector<double> p_mu = {1, 0}; // [1/(L^2*T)] production rate mean
-// const std::vector<double> p_CV = {0, 0}; // [-] production rate CV
 const std::vector<double> anisotropy = {1.0, 1.0}; // [-] diffusion anisotropy (default 1)
 
 constexpr double dx = 0.3; // [L] grid spacing for solver
 
 constexpr double dist_cutoff_factor = 2.0; // [-] used to cut off lognormal dists at mu*factor to maintain stability. only used for diffusivity D atm.
-constexpr double IDW_cutoff_radius = 3.0 * Amax_mu; // [L] radius for IDW interpolation of velocity field. Coupled to Amax to account for length scale
+constexpr double IDW_cutoff_radius = 2.0 * Amax_mu; // [L] radius for external IDW interpolation of velocity field. Coupled to Amax to account for length scale
 constexpr double domain_bd_stiffness = kr / 2; // [1/T^2] domain boundary stiffness (too high can cause instabilities)
 
 // choose what to write to VTK files for visualization/debugging. disable things to save space 
 namespace Output { 
     constexpr bool c = true; // concentration
     constexpr bool D = true; // diffusion coefficient
-    // constexpr bool p = true; // production rate
     constexpr bool k = true; // kinetic coefficients
     constexpr bool parent_idx = true; // polygon idx grid
     constexpr bool cell_type = true; // boolean polygon cell_type 
