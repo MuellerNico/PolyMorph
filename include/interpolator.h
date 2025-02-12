@@ -110,8 +110,8 @@ void Interpolator::scatter() {
 
 void Interpolator::gather() {
   // get all children from parent idx built during scatter()
-  for (auto& cell : ensemble.polygons) {
-    cell.children.clear();
+  for (auto& polygon : ensemble.polygons) {
+    polygon.children.clear();
   }
   // cannot easily parallelize this part
   for (int i = istart; i < iend; i++) {
@@ -124,19 +124,21 @@ void Interpolator::gather() {
   // accumulate average concentration and concentration gradient from children
   #pragma omp parallel for
   for (int p = Nr; p < ensemble.polygons.size(); p++) {
-    auto& cell = ensemble.polygons[p];
-    const int num_children = cell.children.size();
+    auto& polygon = ensemble.polygons[p];
+    const int num_children = polygon.children.size();
     if (num_children == 0) continue; // skip if no interior grid points
     const double inv_size = 1.0 / num_children;
 
     for (int sp = 0; sp < NUM_SPECIES; sp++){
-      cell.c[sp] = 0.0; // reset values
-      cell.grad_c[sp] = Point(0, 0); // reset values
-      for (const Index& idx : cell.children) {
-        cell.c[sp] += inv_size * solver.c(idx)[sp];
-        cell.grad_c[sp].add(inv_size, solver.grad_c(idx)[sp]);
+      polygon.c[sp] = 0.0; // reset values
+      polygon.grad_c[sp] = Point(0, 0); // reset values
+      for (const Index& idx : polygon.children) {
+        polygon.c[sp] += inv_size * solver.c(idx)[sp];
+        polygon.grad_c[sp].add(inv_size, solver.grad_c(idx)[sp]);
       }
     }
+    // Determine cell_type
+    polygon.cell_type = ensemble.cellTypeEffect(polygon, polygon.c, polygon.grad_c, ensemble.t);
   } 
 }
 

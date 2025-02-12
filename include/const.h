@@ -40,9 +40,9 @@ constexpr int Nr = 0; // number of rigid polygons
 constexpr double drmax = h + sh + ss; // maximum interaction distance
 
 // -- New PolyMorph parameters --
-constexpr bool ADVECTION_DILUTION_EN = false; // enable advection-dilution and calculate velocity field
 constexpr int NUM_SPECIES = 2; // [-] number of diffusable species (defines size of vectors D,p,c,grad_c)
 constexpr int NUM_KIN = 3; // [-] number of kinetic coefficients (defines size of vector k)
+constexpr bool ADVECTION_DILUTION_EN = false; // enable advection-dilution and calculate velocity field
 constexpr int RNG_SEED = 90178009; // random number generator seed
 
 const std::vector<double> k0 =   {1, 0.1, 0}; // [?] reaction coefficients background (outside of cells)

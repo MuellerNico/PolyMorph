@@ -480,8 +480,6 @@ struct Ensemble {
       if (polygons[p].A > beta * polygons[p].A0 || alpha_new < 0) {
         polygons[p].A0 += alpha_new * dt;
       }
-      // Determine cell_type
-      polygons[p].cell_type = cellTypeEffect(polygons[p], polygons[p].c, polygons[p].grad_c, t);
     }
     t += dt; // advance the time
   }
