@@ -34,7 +34,7 @@ constexpr double cc = 30; // [1/T] collision damping rate
 constexpr double dt = 1e-4; // [T] time step
 
 constexpr std::size_t Nf = 100; // number of output frames
-constexpr std::size_t Ns = 1200; // number of time steps between frames
+constexpr std::size_t Ns = 1000; // number of time steps between frames
 constexpr int Nr = 0; // number of rigid polygons
 
 constexpr double drmax = h + sh + ss; // maximum interaction distance

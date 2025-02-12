@@ -6,10 +6,9 @@
 * Default setup simulates a scenario of exponential tissue growth starting from a single cell.
 * There are two chemical species with concentrations c0 and c1.
 * The former is produced by the starting cell, the latter at the boundary. 
-* Both concentrations degrade linearly with k0 = k1 = 1.
+* Both concentrations degrade linearly with degradation rates k0 = k1 = 1.
 * Cells that experience a local concentration c0 below a certain threshold stop growing and differentiate. 
-* Advection & dilution is enabled and the resulting velocity field inside the tissue is calculated.
-* Outside the tissue the velocity is set to zero. 
+* The cells also slowly move towards the gradient of c1. 
 */
 int main(int argc, char* argv[]) {
     welcome();
@@ -31,9 +30,6 @@ int main(int argc, char* argv[]) {
 
     Solver solver(domain, dx, linearDegradation); // init solver
     Interpolator interpolator(ensemble, solver); // init interpolator
-
-    // choose velocity interpolation method for exterior nodes (outside the tissue)
-    interpolator.ext_interpolation_method = InterpolationMethod::ZERO; 
     
     // specify boundary conditions for species 1. default is zero-flux.
     solver.boundary[1].west = {BoundaryCondition::Type::Dirichlet, 1};
@@ -41,13 +37,13 @@ int main(int argc, char* argv[]) {
     
     ensemble.polygons[0].k[2] = 1; // set constant production rate for starting cell only
 
-    // define lambdas f(c,∇c,t) for concentration effects on cell behavior
+    // user defined lambdas f(c,∇c,t) for concentration effects on cell behavior
     ensemble.accelerationEffect = [](const Polygon& self, const std::vector<double>& c, const std::vector<Point>& grad_c, double t) { 
-        return 1e2 * grad_c[1]; // move towards gradient of c1
+        return 3e2 * grad_c[1]; // move towards gradient of c1
     };
     int T = Ns*Nf*dt; // final time
     ensemble.cellTypeEffect = [T](const Polygon& self, const std::vector<double>& c, const std::vector<Point>& grad_c, double t) { 
-        if (c[0] > 0 && c[0] < 0.003 && t > T/2) return 1; // differentiate cell type if concentration falls below threshold after T/2
+        if (c[0] < 0.005 && t > T/2) return 1; // differentiate cell type if concentration falls below threshold after T/2
         else if (self.cell_type == 1) return 1; // keep cell type once differentiated
         else return 0; 
     };
