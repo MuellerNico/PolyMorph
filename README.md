@@ -1,9 +1,5 @@
 # PolyMorph
 
-## Abstract
-
-We present PolyMorph, a lightweight standalone C++ program that extends its predecessor PolyHoop by a finite-difference solver for multi-component reaction-advection-diffusion equations. PolyMorph simulates two integral parts of tissue morphogenesis in two dimensions: 1) the mechanics of cellular deformation, growth and proliferation, and 2) transport and reaction of an arbitrary number of chemical species. Both of these components are bidirectionally coupled, allowing cells to read out local information on concentrations and flow, and allowing the chemical transport and reaction kinetics to depend on spatial information such as the local cell type, size or shape. This bidirectional feedback makes PolyMorph a versatile tool to study a variety of morphogenetic processes such as chemotaxis, cell sorting, tissue patterning with morphogen gradients, Turing patterning, and diffusion- or supply-limited growth with sub-cellular resolution.
-
 ## Installation and execution
 Use the provided makefile to compile the program. Then run the executable, specifying the number of cores available on your machine:
 ```shell
