@@ -64,6 +64,6 @@ int main(int argc, char* argv[]) {
         ensemble.output(f); // print frame
         solver.output(f); // print frame
     }
-    //ensemble.write_OFF("final_state.off"); // save final state, can reuse as input later
+    ensemble.write_OFF("final_state.off"); // save final state, can reuse as input later
     goodbye();
 }
