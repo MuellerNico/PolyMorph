@@ -11,7 +11,8 @@ PolyMorph does not use any external libraries. It only requires a compiler compa
 
 ## Directory structure
 `root`: main.cpp, makefile, ensemble.off (input file), README.md    
-`/include`: Contains all header files which make up the core of this software  
+`/include`: Contains all header files which make up the core of this software 
+`/out`: Output produced by the default setup when running the program out-of-the-box.  
 
 ## Source files
 
