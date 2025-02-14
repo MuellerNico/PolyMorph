@@ -4,7 +4,7 @@
 
 /*
 * Default setup simulates a scenario of exponential tissue growth starting from a single cell.
-* On a laptop with 4 cores @ 2.80GHz the default setup takes about 2 minutes to run.
+* On a laptop with 4 cores @ 2.80GHz the default setup takes about 1 minute to run.
 * There are two chemical species with concentrations c0 and c1.
 * The former is produced by the starting cell, the latter at the domain boundary. 
 * Both concentrations degrade linearly with degradation rates k0 and k1 respectively.
@@ -16,6 +16,12 @@ int main(int argc, char* argv[]) {
     validate_parameters(); // checks that correct number of input parameters are set
     write_config(); // write cfg file to save parameters
     
+    // get output folder from command line argument
+    if (argc > 1) {
+        output_folder = argv[1] + std::string("/");
+    }
+    std::cout << "Output folder: " << output_folder << std::endl;
+
     double Lx = 30;
     double Ly = 30;
     Domain domain(-Lx/2, -Ly/2, Lx/2, Ly/2); // initialize rectangular domain

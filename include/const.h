@@ -59,6 +59,8 @@ constexpr double dist_cutoff_factor = 2.0; // [-] used to cut off lognormal dist
 constexpr double IDW_cutoff_radius = 2.0 * Amax_mu; // [L] radius for external IDW interpolation of velocity field. Coupled to Amax to account for length scale
 constexpr double domain_bd_stiffness = kr / 2; // [1/T^2] domain boundary stiffness (too high can cause instabilities)
 
+std::string output_folder = "out/"; // default output folder
+
 // choose what to write to VTK files for visualization/debugging. disable things to save space 
 namespace Output { 
     constexpr bool c = true; // concentration

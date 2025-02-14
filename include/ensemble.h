@@ -600,7 +600,11 @@ struct Ensemble {
     // write a VTK polygon file containing the areas, perimeters, and coordination numbers
     char name [16];
     snprintf(name, 16, "frame%06zu.vtp", f);
-    std::ofstream file(name);
+    std::ofstream file(output_folder + name);
+    if (!file) {
+      std::cerr << "ERROR: Could not open file " << output_folder << name << std::endl;
+      return;
+    }
     file << "<VTKFile type=\"PolyData\" version=\"0.1\" byte_order=\"LittleEndian\">\n";
     file << "  <PolyData>\n";
     file << "    <Piece NumberOfPoints=\"" << Nv << "\" NumberOfPolys=\"" << polygons.size() << "\">\n";

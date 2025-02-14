@@ -123,8 +123,11 @@ struct Solver {
     void output(const std::size_t frame) {
         char filename [19]; 
         snprintf(filename, 19, "rd_frame%06zu.vts", frame);        
-        std::ofstream file(filename);
-
+        std::ofstream file(output_folder + filename);
+        if (!file) {
+            std::cerr << "ERROR: Could not open file " << output_folder << filename << std::endl;
+            return;
+        }
         file << "<?xml version=\"1.0\"?>" << std::endl;
         file << "<VTKFile type=\"StructuredGrid\" version=\"0.1\">" << std::endl;
         file << "<StructuredGrid WholeExtent=\"0 " << Nx-1 << " 0 " << Ny-1 << " 0 0\">" << std::endl;

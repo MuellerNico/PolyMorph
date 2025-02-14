@@ -7,13 +7,17 @@ $ cd PolyMorph/
 $ make
 $ OMP_NUM_THREADS=4 ./polymorph
 ```
-On an laptop with 4 cores @ 2.80GHz the default setup takes about 2 minutes to run.
-PolyMorph does not use any external libraries. It only requires a compiler compatible with the C++11 standard and the OpenMP 3.1 specification for multi-threading support. 
+On a laptop with 4 cores @ 2.80GHz the default setup takes about 1 minute to run. PolyMorph does not use any external libraries. It only requires a compiler compatible with the C++11 standard and the OpenMP 3.1 specification for multi-threading support. 
+
+Optionally, one can specify an output folder (default is `/out`):
+```shell
+$ OMP_NUM_THREADS=4 ./polymorph my/output/folder
+```
 
 ## Directory structure
 `root`: main.cpp, makefile, ensemble.off (input file), README.md    
 `/include`: Contains all header files which make up the core of this software  
-`/out`: Output produced by the default setup when running the program out-of-the-box.  
+`/out`: Default output folder. Already contains the example output produced by the default setup when running the program out-of-the-box.  
 
 ## Source files
 
