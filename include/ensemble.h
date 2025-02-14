@@ -46,6 +46,8 @@ struct Ensemble {
   ConcentrationEffect<double> lineTensionEffect = [](const Polygon& self, const std::vector<double>& c, const std::vector<Point>& grad_c, double t) { return gam; };
   ConcentrationEffect<double> edgeContractilityStiffnessEffect = [](const Polygon& self, const std::vector<double>& c, const std::vector<Point>& grad_c, double t) { return kl; };
   ConcentrationEffect<double> bendingStiffnessEffect = [](const Polygon& self, const std::vector<double>& c, const std::vector<Point>& grad_c, double t) { return kb; };
+  
+  std::function<std::vector<double>(const Polygon& self)> modifyKinCoeff = [](const Polygon& self) { return self.k; };
 
   Ensemble(const char* name, Domain& domain, int seed=RNG_SEED) : t(0), domain(domain) {
     // initialize random number generator
@@ -97,7 +99,7 @@ struct Ensemble {
     polygons.pop_back(); // remove the last polygon
   }
   
-  void step()
+  void step(double dt)
   {
     // polygon fusion
     while (theta > 0) // this is either if(false) or while(true)
@@ -480,6 +482,8 @@ struct Ensemble {
       if (polygons[p].A > beta * polygons[p].A0 || alpha_new < 0) {
         polygons[p].A0 += alpha_new * dt;
       }
+      // Update kinetic coefficients
+      polygons[p].k = modifyKinCoeff(polygons[p]);
     }
     t += dt; // advance the time
   }

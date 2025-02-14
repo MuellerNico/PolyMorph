@@ -1,6 +1,6 @@
 #!/bin/bash
 
-OMP_NUM_THREADS=8 # <- change this to available cores
+OMP_NUM_THREADS=4 # <- change this to available cores
 #output="./out" # <- change this to your desired output folder
 #output="/mnt/c/Users/nico/Desktop/PolymorphOutput"
 output="/mnt/c/Users/muell/Desktop/PolymorphOutput"

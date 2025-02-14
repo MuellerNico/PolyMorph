@@ -5,8 +5,9 @@ Use the provided makefile to compile the program. Then run the executable, speci
 ```shell
 $ cd PolyMorph/
 $ make
-$ OMP_NUM_THREADS=8 ./polymorph
+$ OMP_NUM_THREADS=4 ./polymorph
 ```
+On an laptop with 4 cores @ 2.80GHz the default setup takes about 2 minutes to run.
 PolyMorph does not use any external libraries. It only requires a compiler compatible with the C++11 standard and the OpenMP 3.1 specification for multi-threading support. 
 
 ## Directory structure
@@ -43,5 +44,3 @@ A standard usage produces 3 types of output files:
 
 ## Usage
 To customize the simulation for your application scenario, set the desired parameters in ``const.h`` and adjust other properties such as boundary conditions, reaction term, concentration effects on cell behavior, etc. inside ``main.cpp``. The program was designed with the intent, that the user only has to work with these two files. 
-
-TODO: examples/explanation of lambdas? explain why everything in vectors (multi species)?

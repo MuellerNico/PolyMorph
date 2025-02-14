@@ -45,12 +45,12 @@ constexpr int NUM_KIN = 3; // [-] number of kinetic coefficients (defines size o
 constexpr bool ADVECTION_DILUTION_EN = false; // enable advection-dilution and calculate velocity field
 constexpr int RNG_SEED = 90178009; // random number generator seed
 
-const std::vector<double> k0 =   {1, 0.1, 0}; // [?] reaction coefficients background (outside of cells)
-const std::vector<double> k_mu = {1, 0.1, 0}; // [?] reaction coefficients mean
+const std::vector<double> k0 =   {1, 0.1, 0}; // [?] reaction coefficients background
+const std::vector<double> k_mu = {1, 0.1, 1}; // [?] reaction coefficients mean
 const std::vector<double> k_CV = {0.3, 0, 0}; // [-] reaction coefficients CV
 const std::vector<double> D0 =   {32, 32}; // [L^2/T] diffusivity background (recommended to not be zero)
 const std::vector<double> D_mu = {32, 32}; // [L^2/T] diffusivity mean
-const std::vector<double> D_CV = {0.3, 0}; // [-] diffusivity CV
+const std::vector<double> D_CV = {0.3, 0.3}; // [-] diffusivity CV
 const std::vector<double> anisotropy = {1.0, 1.0}; // [-] diffusion anisotropy (default 1)
 
 constexpr double dx = 0.3; // [L] grid spacing for solver
