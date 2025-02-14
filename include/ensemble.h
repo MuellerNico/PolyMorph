@@ -718,7 +718,7 @@ struct Ensemble {
 
   // write the current ensemble state to file for later entry point
   void write_OFF(std::string filename) const {
-        std::ofstream file(filename);
+        std::ofstream file(output_folder + filename);
         if (!file.is_open()) {
             std::cerr << "Error: Could not open file " << filename << std::endl;
             return;

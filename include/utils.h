@@ -156,7 +156,11 @@ void write_config(std::string prefix = "") {
     if (prefix != "") {
         prefix += "_";
     }
-    std::ofstream config(prefix + "simulation.cfg");
+    std::ofstream config(output_folder + prefix + "simulation.cfg");
+    if (!config.is_open()) {
+        std::cerr << "Error: Could not open file simulation.cfg" << std::endl;
+        return;
+    }
     config
         << "Date=" << __DATE__ << std::endl
         << "Time=" << __TIME__ << std::endl
