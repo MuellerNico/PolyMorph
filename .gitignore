@@ -33,3 +33,6 @@
 *.err
 
 .vscode
+
+# my script
+run.sh
