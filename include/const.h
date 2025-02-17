@@ -8,7 +8,7 @@
 constexpr double h = 0.01; // [L] edge thickness
 constexpr double lmin = 0.02; // [L] minimum edge length
 constexpr double lmax = 0.2; // [L] maximum edge length
-constexpr double Q = 1; // [-] isoparametric ratio
+constexpr double C = 1; // [-] circularity index
 constexpr double alpha_mu = 1; // [L^2/T] mean area growth rate
 constexpr double alpha_CV = 0.1; // [-] coefficient of variation of area growth rate
 constexpr double beta = 0.8; // [-] minimum area fraction for growth
@@ -43,10 +43,10 @@ constexpr double drmax = h + sh + ss; // maximum interaction distance
 constexpr int NUM_SPECIES = 2; // [-] number of diffusable species (defines size of vectors D,p,c,grad_c)
 constexpr int NUM_KIN = 3; // [-] number of kinetic coefficients (defines size of vector k)
 constexpr bool ADVECTION_DILUTION_EN = false; // enable advection-dilution and calculate velocity field
-constexpr int RNG_SEED = 90178009; // random number generator seed
+constexpr int RNG_SEED = 0; // random number generator seed
 
-const std::vector<double> k0 =   {1, 0.1, 0}; // [?] reaction coefficients background
-const std::vector<double> k_mu = {1, 0.1, 1}; // [?] reaction coefficients mean
+const std::vector<double> k0 =   {1, 0.1, 0}; // [-] reaction coefficients background
+const std::vector<double> k_mu = {1, 0.1, 1}; // [-] reaction coefficients mean
 const std::vector<double> k_CV = {0.3, 0, 0}; // [-] reaction coefficients CV
 const std::vector<double> D0 =   {32, 32}; // [L^2/T] diffusivity background (recommended to not be zero)
 const std::vector<double> D_mu = {32, 32}; // [L^2/T] diffusivity mean
@@ -55,9 +55,9 @@ const std::vector<double> anisotropy = {1.0, 1.0}; // [-] diffusion anisotropy (
 
 constexpr double dx = 0.3; // [L] grid spacing for solver
 
-constexpr double dist_cutoff_factor = 2.0; // [-] used to cut off lognormal dists at mu*factor to maintain stability. only used for diffusivity D atm.
-constexpr double IDW_cutoff_radius = 2.0 * Amax_mu; // [L] radius for external IDW interpolation of velocity field. Coupled to Amax to account for length scale
-constexpr double domain_bd_stiffness = kr / 2; // [1/T^2] domain boundary stiffness (too high can cause instabilities)
+constexpr double dist_cutoff_factor = 2.0; // [-] used to cut off lognormal dists at mu*factor to maintain stability. only used for diffusivity D currently
+constexpr double domain_bd_stiffness = kr; // [1/T^2] domain boundary stiffness (too high can cause instabilities when tissue fills out entire domain)
+const double IDW_cutoff_radius = 2 * std::sqrt(Amax_mu); // [L] radius for external IDW interpolation of velocity field. Coupled to Amax to account for length scale
 
 std::string output_folder = "out/"; // default output folder
 

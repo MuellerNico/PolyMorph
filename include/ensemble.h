@@ -401,7 +401,7 @@ struct Ensemble {
       
       // compute vertex accelerations
       polygons[p].area(); // update the polygon area
-      const double ls = polygons[p].perimeter0() / std::sqrt(Q * 4 * M_PI * polygons[p].A0); // inverse stretch ratio
+      const double ls = polygons[p].perimeter0() / std::sqrt(C * 4 * M_PI * polygons[p].A0); // inverse stretch ratio
       const Point accEff = accelerationEffect(polygons[p], polygons[p].c, polygons[p].grad_c, t);
       for (std::size_t i = v.size() - 1, k = i - 1, j = 0; j < v.size(); k = i, i = j++)
       {
@@ -458,9 +458,9 @@ struct Ensemble {
       {
         const std::size_t bxi = (polygons[p].vertices[i].r.x - x0) / bs + 1; // box index in x direction // NM: is the +1 because of extra boxes?
         const std::size_t byi = (polygons[p].vertices[i].r.y - y0) / bs + 1; // box index in y direction
-        for (std::size_t bxj = bxi - 1; bxj <= bxi + 1; ++bxj)  //NM: interaction within 1 box in each direction
+        for (std::size_t bxj = bxi - 1; bxj <= bxi + 1; ++bxj)  // interaction within 1 box in each direction
           for (std::size_t byj = byi - 1; byj <= byi + 1; ++byj)
-            for (Vertex* v = first[bxj * Ny + byj]; v; v = v->next) //NM: in first we get the starting vertex from each box
+            for (Vertex* v = first[bxj * Ny + byj]; v; v = v->next) // in first we get the starting vertex from each box
               if (v != &polygons[p].vertices[k] && v != &polygons[p].vertices[i] && v != &polygons[p].vertices[j])
                 interaction(v, &polygons[p].vertices[i], &polygons[p].vertices[k], &polygons[p].vertices[j]);
       }
