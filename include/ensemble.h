@@ -9,7 +9,7 @@
 #include <map>
 #include <cmath>
 
-#include "const.h"
+#include "param.h"
 #include "geometry.h"
 #include "domain.h"
 

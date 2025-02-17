@@ -23,7 +23,7 @@ $ OMP_NUM_THREADS=4 ./polymorph my/output/folder
 
 ``main.cpp``: Simulation entry point and main time stepping loop. 
 
-``const.h``: Contains all parameters and settings. Treat this like a configuration-file. 
+``param.h``: Contains all parameters and settings. Treat this like a configuration-file. 
 
 ``domain.h``: Defines a simple rectangular domain within which all calculations happen. The boundary conditions of the solver will be applied at the boundaries of this domain.
 
@@ -43,8 +43,8 @@ $ OMP_NUM_THREADS=4 ./polymorph my/output/folder
 A standard usage produces 3 types of output files:
 - A series of ``.vtp`` frames representing the polygon ensemble to be visualized in ParaView. 
 - A series of ``.vts`` frames representing the grid of the finite difference solver to visualized in the same ParaView session. 
-- ``simulation.cfg`` saves all parameters set in const.h in text format for reproducibility. 
+- ``simulation.cfg`` saves all parameters set in param.h in text format for reproducibility. 
 - Optionally, a ``.off`` file saving the polygon ensemble at a certain time point (e.g. at the end of a simulation run) to later load as the input/starting point of another simulation. 
 
 ## Usage
-To customize the simulation for your application scenario, set the desired parameters in ``const.h`` and adjust other properties such as boundary conditions, reaction term, concentration effects on cell behavior, etc. inside ``main.cpp``. The program was designed with the intent, that the user only has to work with these two files. 
+To customize the simulation for your application scenario, set the desired parameters in ``param.h`` and adjust other properties such as boundary conditions, reaction term, concentration effects on cell behavior, etc. inside ``main.cpp``. The program was designed with the intent, that the user only has to work with these two files. 

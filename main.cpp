@@ -56,7 +56,7 @@ int main(int argc, char* argv[]) {
     };
     constexpr int T = Ns*Nf*dt; // final time
     ensemble.cellTypeEffect = [](const Polygon& self, const std::vector<double>& c, const std::vector<Point>& grad_c, double t) { 
-        if (c[0] < 0.005 && t > T/2) return 1; // differentiate cell type if concentration c0 falls below threshold after T/2
+        if (c[0] < 0.01 && t > T/2) return 1; // differentiate cell type if concentration c0 falls below threshold after T/2
         else if (self.cell_type == 1) return 1; // keep cell type once differentiated
         else return 0; 
     };

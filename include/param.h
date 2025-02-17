@@ -1,5 +1,5 @@
-#ifndef CONST_H
-#define CONST_H
+#ifndef PARAM_H
+#define PARAM_H
 
 #include <cmath>
 #include <vector>
@@ -10,7 +10,7 @@ constexpr double lmin = 0.02; // [L] minimum edge length
 constexpr double lmax = 0.2; // [L] maximum edge length
 constexpr double C = 1; // [-] circularity index
 constexpr double alpha_mu = 1; // [L^2/T] mean area growth rate
-constexpr double alpha_CV = 0.1; // [-] coefficient of variation of area growth rate
+constexpr double alpha_CV = 0.3; // [-] coefficient of variation of area growth rate
 constexpr double beta = 0.8; // [-] minimum area fraction for growth
 constexpr double Amin = 0; // [L^2] minimum area
 constexpr double Amax_mu = M_PI; // [L^2] mean maximum area
@@ -34,7 +34,7 @@ constexpr double cc = 30; // [1/T] collision damping rate
 constexpr double dt = 1e-4; // [T] time step
 
 constexpr std::size_t Nf = 100; // number of output frames
-constexpr std::size_t Ns = 1000; // number of time steps between frames
+constexpr std::size_t Ns = 1100; // number of time steps between frames
 constexpr int Nr = 0; // number of rigid polygons
 
 constexpr double drmax = h + sh + ss; // maximum interaction distance
@@ -45,8 +45,8 @@ constexpr int NUM_KIN = 3; // [-] number of kinetic coefficients (defines size o
 constexpr bool ADVECTION_DILUTION_EN = false; // enable advection-dilution and calculate velocity field
 constexpr int RNG_SEED = 0; // random number generator seed
 
-const std::vector<double> k0 =   {1, 0.1, 0}; // [-] reaction coefficients background
-const std::vector<double> k_mu = {1, 0.1, 1}; // [-] reaction coefficients mean
+const std::vector<double> k0 =   {1, 0.1, 0}; // reaction coefficients background
+const std::vector<double> k_mu = {1, 0.1, 1}; // reaction coefficients mean
 const std::vector<double> k_CV = {0.3, 0, 0}; // [-] reaction coefficients CV
 const std::vector<double> D0 =   {32, 32}; // [L^2/T] diffusivity background (recommended to not be zero)
 const std::vector<double> D_mu = {32, 32}; // [L^2/T] diffusivity mean
@@ -72,4 +72,4 @@ namespace Output {
     constexpr bool grad_c = true; // concentration gradient
 }; 
 
-#endif
+#endif // PARAM_H

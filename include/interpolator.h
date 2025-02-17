@@ -8,7 +8,7 @@
 #include "utils.h"
 
 enum class InterpolationMethod {
-  IDW, // inverse distance weighting: good but expensive (adjust cutoff_radius in const.h)
+  IDW, // inverse distance weighting: good but expensive (adjust cutoff_radius in param.h)
   BILINEAR, // bilinear interpolation: cheaper but some artifacts
   ZERO // set velocity to zero outside of tissue: most efficient when only tissue interior is needed
 };

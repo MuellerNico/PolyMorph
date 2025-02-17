@@ -11,7 +11,7 @@
 #include <ctime>
 #include <iomanip>
 
-#include "const.h"
+#include "param.h"
 
 // grid indices
 struct Index {

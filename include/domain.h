@@ -2,7 +2,7 @@
 #define DOMAIN_H
 
 #include "geometry.h"
-#include "const.h"
+#include "param.h"
 
 struct Domain {
     double x0, y0, x1, y1;
