@@ -57,7 +57,7 @@ constexpr double dx = 0.3; // [L] grid spacing for solver
 
 constexpr double dist_cutoff_factor = 2.0; // [-] used to cut off lognormal dists at mu*factor to maintain stability. only used for diffusivity D currently
 constexpr double domain_bd_stiffness = kr; // [1/T^2] domain boundary stiffness (too high can cause instabilities when tissue fills out entire domain)
-const double IDW_cutoff_radius = 2 * std::sqrt(Amax_mu); // [L] radius for external IDW interpolation of velocity field. Coupled to Amax to account for length scale
+const double IDW_cutoff_radius = 4 * std::sqrt(Amax_mu); // [L] radius for external IDW interpolation of velocity field. Coupled to Amax to account for length scale
 
 std::string output_folder = "out/"; // default output folder
 
