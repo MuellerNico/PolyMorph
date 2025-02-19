@@ -64,8 +64,8 @@ std::string Grid<T>::to_vtk(std::string name) {
     std::stringstream xml;
     xml << "<DataArray type=\"Float64\" Name=\"" << name 
     << "\" format=\"ascii\">" << std::endl;
-    for (int i = 0; i < sizeX(); i++) {
-        for (int j = 0; j < sizeY(); j++) {
+    for (size_t i = 0; i < sizeX(); i++) {
+        for (size_t j = 0; j < sizeY(); j++) {
             xml << data[i][j] << " ";
         }
         xml << std::endl;
@@ -80,9 +80,9 @@ std::string Grid<std::vector<double>>::to_vtk(std::string name) {
     xml << "<DataArray type=\"Float64\" Name=\"" << name 
         << "\" NumberOfComponents=\"" << sizeZ() 
         << "\" format=\"ascii\">" << std::endl;
-    for (int i = 0; i < sizeX(); i++) {
-        for (int j = 0; j < sizeY(); j++) {
-            for (int k = 0; k < sizeZ(); k++) {
+    for (size_t i = 0; i < sizeX(); i++) {
+        for (size_t j = 0; j < sizeY(); j++) {
+            for (size_t k = 0; k < sizeZ(); k++) {
                 xml << data[i][j][k] << " ";
             }
         }
@@ -98,8 +98,8 @@ std::string Grid<Point>::to_vtk(std::string name) {
     std::stringstream xml;
     xml << "<DataArray type=\"Float64\" Name=\"" << name 
         << "\" NumberOfComponents=\"2\" format=\"ascii\">" << std::endl;
-    for (int i = 0; i < sizeX(); i++) {
-        for (int j = 0; j < sizeY(); j++) {
+    for (size_t i = 0; i < sizeX(); i++) {
+        for (size_t j = 0; j < sizeY(); j++) {
             xml << data[i][j].x << " " << data[i][j].y << " ";
         }
         xml << std::endl;
@@ -115,9 +115,9 @@ std::string Grid<std::vector<Point>>::to_vtk(std::string name) {
     xml << "<DataArray type=\"Float64\" Name=\"" << name 
         << "_x\" NumberOfComponents=\"" << sizeZ() 
         << "\" format=\"ascii\">" << std::endl;
-    for (int i = 0; i < sizeX(); i++) {
-        for (int j = 0; j < sizeY(); j++) {
-            for (int k = 0; k < sizeZ(); k++) {
+    for (size_t i = 0; i < sizeX(); i++) {
+        for (size_t j = 0; j < sizeY(); j++) {
+            for (size_t k = 0; k < sizeZ(); k++) {
                 xml << data[i][j][k].x << " ";
             }
         }
@@ -127,9 +127,9 @@ std::string Grid<std::vector<Point>>::to_vtk(std::string name) {
     xml << "<DataArray type=\"Float64\" Name=\"" << name 
         << "_y\" NumberOfComponents=\"" << sizeZ() 
         << "\" format=\"ascii\">" << std::endl;
-    for (int i = 0; i < sizeX(); i++) {
-        for (int j = 0; j < sizeY(); j++) {
-            for (int k = 0; k < sizeZ(); k++) {
+    for (size_t i = 0; i < sizeX(); i++) {
+        for (size_t j = 0; j < sizeY(); j++) {
+            for (size_t k = 0; k < sizeZ(); k++) {
                 xml << data[i][j][k].y << " ";
             }
         }

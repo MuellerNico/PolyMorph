@@ -62,7 +62,7 @@ struct Ensemble {
   // change kinetic coefficients based on cell properties
   std::function<std::vector<double>(const Polygon& self)> kinCoeff = [](const Polygon& self) { return self.k; };
 
-  Ensemble(const char* name, Domain& domain, int seed=RNG_SEED) : t(0), domain(domain) {
+  Ensemble(const char* name, Domain& domain, int seed=RNG_SEED) : domain(domain), t(0) {
     // initialize random number generator
     rng.seed(seed);
     // read OFF file header

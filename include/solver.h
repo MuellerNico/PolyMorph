@@ -60,7 +60,7 @@ struct Solver {
     Grid<Point> velocity; // velocity field
     Grid<std::vector<Point>> grad_c; // concentration gradient
 
-    Solver(Domain& domain, const double dx, Reaction R) : t(0), domain(domain), R(R), dx(dx) {
+    Solver(Domain& domain, const double dx, Reaction R) : domain(domain), dx(dx), t(0), R(R) {
         this->boundary = Boundary::zeroFlux(NUM_SPECIES);
         this->Nx = domain.width() / dx + 1;
         this->Ny = domain.height() / dx + 1;

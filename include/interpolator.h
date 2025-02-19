@@ -68,7 +68,7 @@ void Interpolator::scatter() {
         const double y = solver.domain.y0 + j * solver.dx;
         const Point grid_point(x, y);
         // check if still the same parent (ignore rigid)
-        if (prev_idx(i, j) >= Nr && prev_idx(i, j) < ensemble.polygons.size() && ensemble.polygons[prev_idx(i, j)].contains(grid_point)) {
+        if (prev_idx(i, j) >= Nr && prev_idx(i, j) < (int) ensemble.polygons.size() && ensemble.polygons[prev_idx(i, j)].contains(grid_point)) {
           new_idx(i, j) = prev_idx(i, j);
         } 
         else {
@@ -129,7 +129,7 @@ void Interpolator::gather() {
   }
   // accumulate average concentration and concentration gradient from children
   #pragma omp parallel for
-  for (int p = Nr; p < ensemble.polygons.size(); p++) {
+  for (size_t p = Nr; p < ensemble.polygons.size(); p++) {
     auto& polygon = ensemble.polygons[p];
     const int num_children = polygon.children.size();
     if (num_children == 0) continue; // skip if no interior grid points
@@ -174,7 +174,7 @@ Point Interpolator::interior_IDW_vel_interpolation(const Point& grid_point, cons
   const Polygon& parent = ensemble.polygons[parent_idx];
   std::vector<double> weights;
   double total_weight = 0;
-  for (int i = 0; i < parent.vertices.size(); i++) {
+  for (size_t i = 0; i < parent.vertices.size(); i++) {
     const Vertex& vertex = parent.vertices[i];
     double distance = (vertex.r - grid_point).length();
     double weight = 1.0 / (distance + 1e-6 * h); // avoid division by zero
@@ -182,7 +182,7 @@ Point Interpolator::interior_IDW_vel_interpolation(const Point& grid_point, cons
     total_weight += weight;
   }    
   Point vel = Point(0, 0);
-  for (int i = 0; i < parent.vertices.size(); i++) {
+  for (size_t i = 0; i < parent.vertices.size(); i++) {
     const Vertex& vertex = parent.vertices[i];
     vel = vel + weights[i] / total_weight * vertex.v;
   }

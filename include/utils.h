@@ -108,7 +108,7 @@ std::vector<double> get_means(const std::vector<std::lognormal_distribution<>>& 
 std::vector<std::lognormal_distribution<>> create_lognormal(const std::vector<double>& mu, const std::vector<double>& CV) {
     assert(mu.size() == CV.size());
     std::vector<std::lognormal_distribution<>> dists;
-    for (int i = 0; i < mu.size(); i++) {
+    for (unsigned i = 0; i < mu.size(); i++) {
         double sigma = std::sqrt(std::log(1 + CV[i]*CV[i]));  // Standard deviation of the underlying normal
         double mu_prime = std::log(mu[i]) - 0.5 * sigma * sigma;  // Adjust mean of the underlying normal
         dists.push_back(std::lognormal_distribution<>(mu_prime, sigma));
@@ -136,7 +136,7 @@ double sample(std::lognormal_distribution<>& dist, std::mt19937& rng, bool cutof
 // returns a vector of samples from a vector of lognormal distributions
 std::vector<double> sample(std::vector<std::lognormal_distribution<>>& dists, std::mt19937& rng, bool cutoff=false) {
     std::vector<double> samples;
-    for (int i = 0; i < dists.size(); i++) {
+    for (unsigned i = 0; i < dists.size(); i++) {
         double x = sample(dists[i], rng, cutoff);
         samples.push_back(x);
     }
