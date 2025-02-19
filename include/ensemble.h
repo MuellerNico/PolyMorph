@@ -19,9 +19,12 @@
 #include "geometry.h"
 #include "domain.h"
 
-// User defined Effect functions to control cell behavior based on concentration
+// User defined lambda functions to control concentration effects on cell behavior
 template <typename T>
 using ConcentrationEffect = std::function<T(const Polygon& self, const std::vector<double>& c, const std::vector<Point>& grad_c, double t)>;
+// Concentration effects on contact between cells (adhesion and friction)
+template <typename T>
+using ConcentrationEffectContact = std::function<T(const Polygon& p1, const Polygon& p2, const std::vector<double>& c1, const std::vector<double>& c2, const std::vector<Point>& grad_c1, const std::vector<Point>& grad_c2, double t)>;
 
 struct Ensemble {
   Domain& domain; // simulation domain
@@ -44,6 +47,7 @@ struct Ensemble {
   std::vector<std::lognormal_distribution<>> k_dist = create_lognormal(k_mu, k_CV);
 
   // lambda functions
+  // concentration effect on single cell behavior
   ConcentrationEffect<Point> accelerationEffect = [](const Polygon& self, const std::vector<double>& c, const std::vector<Point>& grad_c, double t) { return Point(0, 0); };
   ConcentrationEffect<int> cellTypeEffect = [](const Polygon& self, const std::vector<double>& c, const std::vector<Point>& grad_c, double t) { return 0; };
   ConcentrationEffect<double> growthRateEffect = [](const Polygon& self, const std::vector<double>& c, const std::vector<Point>& grad_c, double t) { return self.alpha; };
@@ -52,7 +56,10 @@ struct Ensemble {
   ConcentrationEffect<double> lineTensionEffect = [](const Polygon& self, const std::vector<double>& c, const std::vector<Point>& grad_c, double t) { return gam; };
   ConcentrationEffect<double> edgeContractilityStiffnessEffect = [](const Polygon& self, const std::vector<double>& c, const std::vector<Point>& grad_c, double t) { return kl; };
   ConcentrationEffect<double> bendingStiffnessEffect = [](const Polygon& self, const std::vector<double>& c, const std::vector<Point>& grad_c, double t) { return kb; };
-  
+  // concentration effect on cell-cell contact
+  ConcentrationEffectContact<double> adhesionEffect = [](const Polygon& p1, const Polygon& p2, const std::vector<double>& c1, const std::vector<double>& c2, const std::vector<Point>& grad_c1, const std::vector<Point>& grad_c2, double t) { return kh; };
+  ConcentrationEffectContact<double> frictionEffect = [](const Polygon& p1, const Polygon& p2, const std::vector<double>& c1, const std::vector<double>& c2, const std::vector<Point>& grad_c1, const std::vector<Point>& grad_c2, double t) { return mu; };
+  // change kinetic coefficients based on cell properties
   std::function<std::vector<double>(const Polygon& self)> modifyKinCoeff = [](const Polygon& self) { return self.k; };
 
   Ensemble(const char* name, Domain& domain, int seed=RNG_SEED) : t(0), domain(domain) {
@@ -537,6 +544,8 @@ struct Ensemble {
   
   // polygon-polygon interaction
   void interaction(Vertex* v0, Vertex* v1, Vertex* v1n0, Vertex* v1n1) {
+    const Polygon& p0 = polygons[v0->p]; // polygon 0
+    const Polygon& p1 = polygons[v1->p]; // polygon 1
     // select the closer of the two edges
     Vertex* v1n [2] = {v1n0, v1n1}; // pointers to neighbors of vertex 1
     double xi [2], xit [2], dr2 [2];
@@ -552,7 +561,7 @@ struct Ensemble {
       // check if arclength distance is large enough to allow for self-contact
       if (lmin < h && v0->p == v1->p)
       {
-        auto& v = polygons[v1->p].vertices;
+        auto& v = p1.vertices;
         const std::size_t j1 = v1 - v.data(), j2 = v2 - v.data();
         for (unsigned int d = 0; d < 2; ++d)
         {
@@ -575,18 +584,20 @@ struct Ensemble {
         da_dr += kr * (h / dr_abs - 1); // linear repulsion
       else if (v0->p != v1->p)
       {
+        const double kh_new = adhesionEffect(p0, p1, p0.c, p1.c, p0.grad_c, p1.grad_c, t);
         if (dr_abs < h + sh)
-          da_dr += kh * (h / dr_abs - 1); // linear adhesion
+          da_dr += kh_new * (h / dr_abs - 1); // linear adhesion
         else
-          da_dr += kh * sh / ss * (1 - drmax / dr_abs); // softening adhesion
+          da_dr += kh_new * sh / ss * (1 - drmax / dr_abs); // softening adhesion
       }
       Point a = da_dr * dr[j]; // acceleration vector
       
       // add dynamic Coulomb friction
       const Point dvt = dv - dndv_dr * dr[j];
       const double dvt_abs = dvt.length();
+      const double mu_new = frictionEffect(p0, p1, p0.c, p1.c, p0.grad_c, p1.grad_c, t);
       if (dvt_abs > 0 && v0->p != v1->p)
-        a.add(-mu * std::abs(da_dr) * dr_abs / dvt_abs, dvt);
+        a.add(-mu_new * std::abs(da_dr) * dr_abs / dvt_abs, dvt);
       
       // distribute the acceleration to the involved vertices
       v0->a.add(1, a);
