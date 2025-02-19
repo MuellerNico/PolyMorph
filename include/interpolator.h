@@ -144,7 +144,7 @@ void Interpolator::gather() {
       }
     }
     // Determine cell_type
-    polygon.cell_type = ensemble.cellTypeEffect(polygon, polygon.c, polygon.grad_c, ensemble.t);
+    polygon.cell_type = ensemble.cellType(polygon, polygon.c, polygon.grad_c, ensemble.t);
   } 
 }
 

@@ -50,31 +50,33 @@ int main(int argc, char* argv[]) {
     solver.boundary[1].east = {BoundaryCondition::Type::Dirichlet, 0};
 
     // user-defined lambda to adjust kinetic coefficients based on cell properties (e.g. cell type, position, etc). 
-    ensemble.modifyKinCoeff = [](const Polygon& self) { 
+    ensemble.kinCoeff = [](const Polygon& self) { 
         // only starting cell (index 0) produces c0 with rate k2, make zero for other cells. leave k0/k1 as is
         return std::vector<double> {self.k[0], self.k[1], (self.polygon_index() == 0) * self.k[2]}; 
     };
 
     // user-defined lambdas f(c,∇c,t) for concentration effects on cell behavior
     // c: vector of concentrations, grad_c: vector of concentration gradients, t: time
-    ensemble.accelerationEffect = [](const Polygon& self, const std::vector<double>& c, const std::vector<Point>& grad_c, double t) { 
+    ensemble.acceleration = [](const Polygon& self, const std::vector<double>& c, const std::vector<Point>& grad_c, double t) { 
         return 3e2 * grad_c[1]; // move towards gradient of c1
     };
     constexpr int T = Ns*Nf*dt; // final time
-    ensemble.cellTypeEffect = [](const Polygon& self, const std::vector<double>& c, const std::vector<Point>& grad_c, double t) { 
+    ensemble.cellType = [](const Polygon& self, const std::vector<double>& c, const std::vector<Point>& grad_c, double t) { 
         if (c[0] < 0.01 && t > T/2) return 1; // differentiate cell type if concentration c0 falls below threshold after T/2
         else if (self.cell_type == 1) return 1; // keep cell type once differentiated
         else return 0; 
     };
-    ensemble.growthRateEffect = [](const Polygon& self, const std::vector<double>& c, const std::vector<Point>& grad_c, double t) { 
+    ensemble.growthRate = [](const Polygon& self, const std::vector<double>& c, const std::vector<Point>& grad_c, double t) { 
         if (self.cell_type == 1) return 0.0; // stop growth if cell has differentiated
         else return self.alpha; // otherwise use the default growth rate
     };
-    // ensemble.maxAreaEffect =
-    // ensemble.areaStiffnessEffect =
-    // ensemble.lineTensionEffect = 
-    // ensemble.edgeContractilityStiffnessEffect = 
-    // ensemble.bendingStiffnessEffect =
+    // ensemble.maxArea =
+    // ensemble.areaStiffness =
+    // ensemble.lineTension = 
+    // ensemble.edgeContractilityStiffness = 
+    // ensemble.bendingStiffness =
+    // ensemble.adhesionStiffness =
+    // ensemble.dynamicFriction =
     
     // run simulation
     ensemble.output(0); // print the initial state (polygons)
