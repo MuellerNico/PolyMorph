@@ -1,3 +1,9 @@
+// PolyMorph
+// Copyright (c) 2024-2025
+// Nicolas Müller, nicolmueller@ethz.ch
+// Roman Vetter, vetterro@ethz.ch
+// ETH Zurich
+
 #ifndef GRID_H
 #define GRID_H
 

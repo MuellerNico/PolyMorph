@@ -1,3 +1,9 @@
+// PolyMorph
+// Copyright (c) 2024-2025
+// Nicolas Müller, nicolmueller@ethz.ch
+// Roman Vetter, vetterro@ethz.ch
+// ETH Zurich
+
 #ifndef SOLVER_H
 #define SOLVER_H
 

@@ -1,16 +1,22 @@
+// PolyMorph
+// Copyright (c) 2024-2025
+// Nicolas Müller, nicolmueller@ethz.ch
+// Roman Vetter, vetterro@ethz.ch
+// ETH Zurich
+
 #include "ensemble.h"
 #include "solver.h"
 #include "interpolator.h"
 
-/*
-* Default setup simulates a scenario of exponential tissue growth starting from a single cell.
-* On a laptop with 4 cores @ 2.80GHz the default setup takes about 1 minute to run.
-* There are two chemical species with concentrations c0 and c1.
-* The former is produced by the starting cell, the latter at the domain boundary. 
-* Both concentrations degrade linearly with degradation rates k0 and k1 respectively.
-* Cells that experience a local concentration c0 below a certain threshold stop growing and differentiate. 
-* The cells also slowly move towards the gradient of c1. 
-*/
+
+// Default setup simulates a scenario of exponential tissue growth starting from a single cell.
+// On a laptop with 4 cores @ 2.80GHz the default setup takes about 1 minute to run.
+// There are two chemical species with concentrations c0 and c1.
+// The former is produced by the starting cell, the latter at the domain boundary. 
+// Both concentrations degrade linearly with degradation rates k0 and k1 respectively.
+// Cells that experience a local concentration c0 below a certain threshold stop growing and differentiate. 
+// The cells also slowly move towards the gradient of c1. 
+
 int main(int argc, char* argv[]) {
     welcome();
     validate_parameters(); // checks that correct number of input parameters are set
