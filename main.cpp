@@ -18,15 +18,15 @@
 // The cells also slowly move towards the gradient of c1. 
 
 int main(int argc, char* argv[]) {
-    welcome();
-    validate_parameters(); // checks that correct number of input parameters are set
-    write_config(); // write cfg file to save parameters
-    
     // get output folder from command line argument
     if (argc > 1) {
         output_folder = argv[1] + std::string("/");
     }
     std::cout << "Output folder: " << output_folder << std::endl;
+    
+    welcome();
+    validate_parameters(); // checks that correct number of input parameters are set
+    write_config(); // write cfg file to save parameters
 
     double Lx = 30;
     double Ly = 30;
