@@ -122,7 +122,7 @@ void Interpolator::gather() {
   // cannot easily parallelize this part
   for (int i = istart; i < iend; i++) {
     for (int j = jstart; j < jend; j++) {
-      if (solver.parent_idx(i, j) >= int(Nr)) { // skip background nodes
+      if (solver.parent_idx(i, j) >= Nr) { // skip background nodes
         ensemble.polygons[solver.parent_idx(i, j)].children.push_back(Index(i, j)); 
       }
     }

@@ -414,7 +414,7 @@ struct Ensemble {
       
       // compute vertex accelerations
       polygons[p].area(); // update the polygon area
-      const double ls = polygons[p].perimeter0() / std::sqrt(C * 4 * M_PI * polygons[p].A0); // inverse stretch ratio
+      const double ls = polygons[p].perimeter0() / std::sqrt(4 * M_PI * polygons[p].A0 / C); // inverse stretch ratio
       const Point accEff = acceleration(polygons[p], polygons[p].c, polygons[p].grad_c, t);
       for (std::size_t i = v.size() - 1, k = i - 1, j = 0; j < v.size(); k = i, i = j++)
       {

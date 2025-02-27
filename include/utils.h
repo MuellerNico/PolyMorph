@@ -212,6 +212,7 @@ void write_config(std::string prefix = "") {
         << "Ns=" << Ns << std::endl
         << "Nr=" << Nr << std::endl
         << "dist_cutoff_factor=" << dist_cutoff_factor << std::endl
+        << "IDW_cutoff_radius=" << IDW_cutoff_radius << std::endl
         << "anisotropy=" << to_string(anisotropy) << std::endl
         << "domain_bd_stiffness=" << domain_bd_stiffness << std::endl
         << "RNG_SEED=" << RNG_SEED << std::endl
@@ -220,7 +221,8 @@ void write_config(std::string prefix = "") {
         << "Output::k=" << Output::k << std::endl
         << "Output::parent_idx=" << Output::parent_idx << std::endl
         << "Output::cell_type=" << Output::cell_type << std::endl
-        << "Output::velocity=" << Output::velocity << std::endl;
+        << "Output::velocity=" << Output::velocity << std::endl
+        << "Output::grad_c=" << Output::grad_c << std::endl;
         // expand if more parameters become relevant
     config.close();
 }
