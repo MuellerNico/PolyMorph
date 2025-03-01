@@ -159,15 +159,15 @@ std::size_t Interpolator::find_parent(Point grid_point) {
         if (v->p >= Nr && ensemble.polygons[v->p].contains(grid_point)) { // don't want to check rigid polygons
           return v->p;
         } else {
-          checked_polygons.insert(v->p); // maybe more efficient to omit the set. not many vert of same polygon in box
+          checked_polygons.insert(v->p); // remember checked polygons
         }
       }
     }
     if (last_iteration) return -2; // background node
-    if (!checked_polygons.empty()) last_iteration = true; // only go 1 more layer
+    if (!checked_polygons.empty()) last_iteration = true; // only search one more box
     ++bxi;
   }
-  return -2; // background node (reached boundary of ensemble box)
+  return -2; // background node (reached boundary of ensemble bounding box)
 }
 
 Point Interpolator::interior_IDW_vel_interpolation(const Point& grid_point, const int parent_idx) {
