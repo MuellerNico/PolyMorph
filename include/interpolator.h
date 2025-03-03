@@ -24,7 +24,7 @@ struct Interpolator {
   Ensemble& ensemble;
   Solver& solver;
   int istart, jstart, iend, jend; // limits of the grid points to be updated (within ensemble bounds)
-  Grid<int>& prev_idx; // stores index of polygon in which a grid point lies. Negative indices indicate a background node.
+  Grid<int>& prev_idx; // stores index of polygon in which a grid point lies. Negative indices (-1 or -2) indicate a background node.
   Grid<int> new_idx;  // temporary grid to store the new parent_idx
   InterpolationMethod ext_interpolation_method; // velocity interpolation method for exterior gridpoints (not inside polygons)
   
@@ -61,6 +61,15 @@ void Interpolator::scatter() {
 
   #pragma omp parallel
   {
+    // fill new_idx with background
+    #pragma omp for collapse(2)
+    for (int i = 0; i < solver.Nx; i++) {
+      for (int j = 0; j < solver.Ny; j++) {
+        new_idx(i, j) = -1;
+      }
+    }
+
+    // create grid-polygon mapping and scatter values to grid
     #pragma omp for collapse(2)
     for (int i = istart; i < iend; i++) {
       for (int j = jstart; j < jend; j++) { 

@@ -43,7 +43,9 @@ int main(int argc, char* argv[]) {
     }; 
 
     Solver solver(domain, dx, linearDegradation); // init solver
-    Interpolator interpolator(ensemble, solver); // init interpolator
+    Interpolator interpolator(ensemble, solver); // init interpolator 
+    // if enabling advection-dilution, choose method for exterior velocity interpolation
+    //interpolator.ext_interpolation_method = InterpolationMethod::ZERO;
     
     // specify custom boundary conditions for species 1. by default everything is zero-flux
     solver.boundary[1].west = {BoundaryCondition::Type::Dirichlet, 1};
