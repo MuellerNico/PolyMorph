@@ -15,10 +15,10 @@
 0 0 
         </DataArray>
         <DataArray type="Float64" Name="D" NumberOfComponents="2" format="ascii">
-30.4745 32 
+20.1884 28.1376 
         </DataArray>
         <DataArray type="Float64" Name="k" NumberOfComponents="3" format="ascii">
-0.714567 0.1 1 
+0.910378 0.1 1 
         </DataArray>
         <DataArray type="Int8" Name="cell_type" format="ascii">
 0 
