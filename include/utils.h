@@ -26,10 +26,6 @@ struct Index {
   Index(int i, int j): i(i), j(j) {}
 };
 
-std::vector<Index> neighbors(Index idx) {
-    return {Index(idx.i-1, idx.j), Index(idx.i+1, idx.j), Index(idx.i, idx.j-1), Index(idx.i, idx.j+1)};
-}
-
 double walltime(){
     struct timeval time;
     if (gettimeofday(&time, NULL)) {
@@ -67,41 +63,11 @@ std::string to_string(const std::vector<T>& v) {
     return s;
 }
 
-double mean(const std::vector<double>& v) {
-    double sum = 0;
-    for (const double& x : v) {
-        sum += x;
-    }
-    return sum / v.size();
-}
-
-double variance(const std::vector<double>& v) {
-    double m = mean(v);
-    double sum = 0;
-    for (const double& x : v) {
-        sum += (x - m) * (x - m);
-    }
-    return sum / v.size();
-}
-
-double stddev(const std::vector<double>& v) {
-    return std::sqrt(variance(v));
-}
-
 // get the mean of a lognormal distribution
 double get_mean(const std::lognormal_distribution<>& dist) {
     double mu_prime = dist.m(); // Log-mean of the underlying normal distribution
     double sigma = dist.s(); // Standard deviation of the underlying normal distribution
     return std::exp(mu_prime + 0.5 * sigma * sigma);
-}
-
-// get the means of a vector of lognormal distributions
-std::vector<double> get_means(const std::vector<std::lognormal_distribution<>>& dists) {
-    std::vector<double> means;
-    for (const auto& dist : dists) {
-        means.push_back(get_mean(dist));
-    }
-    return means;
 }
 
 // creates a vector of lognormal distributions from vectors of means and CVs
