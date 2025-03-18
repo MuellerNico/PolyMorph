@@ -18,11 +18,6 @@
 // The cells also slowly move towards the gradient of c1. 
 
 int main(int argc, char* argv[]) {
-    // get output folder from command line argument
-    if (argc > 1) {
-        output_folder = argv[1] + std::string("/");
-    }
-    std::cout << "Output folder: " << output_folder << std::endl;
     
     welcome();
     validate_parameters(); // checks that correct number of input parameters are set
