@@ -28,9 +28,8 @@ struct Grid {
     size_t sizeX() const { return data.size(); }
     size_t sizeY() const { return data.empty() ? 0 : data[0].size(); }
     size_t sizeZ() const; // only defined for T=vector
-    void parallel_copy_from(const Grid<T>& other); // parallelized assignment operator
+    void swap(Grid<T>& other) { data.swap(other.data); } // swap content with other grid in O(1)
     std::string to_vtk(std::string name); // convert to VTK format (DataArray)
-    void rescale(size_t Nx, size_t Ny, int offset_x, int offset_y, T fill_value);
 };
 
 template<typename T>
@@ -46,17 +45,6 @@ size_t Grid<std::vector<double>>::sizeZ() const {
 template<>
 size_t Grid<std::vector<Point>>::sizeZ() const {
     return data[0][0].size();
-}
-
-// parallelized assignment operator for large grids of same size
-template<typename T>
-void Grid<T>::parallel_copy_from(const Grid<T>& other) {
-    if (this != &other) {
-        #pragma omp parallel for
-        for (size_t i = 0; i < data.size(); i++) {
-            data[i] = other.data[i]; // note: we are copying vectors here
-        }
-    }
 }
 
 template<typename T> // for scalar grids

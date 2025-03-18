@@ -99,7 +99,7 @@ void Interpolator::scatter() {
       }
     }
     // update parent_idx
-    solver.parent_idx.parallel_copy_from(new_idx);
+    solver.parent_idx.swap(new_idx);
 
     // interpolate remaining velocity field at background nodes
     if (ADVECTION_DILUTION_EN) {

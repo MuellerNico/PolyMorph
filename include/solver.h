@@ -122,7 +122,7 @@ struct Solver {
             }
         }
         // update state
-        c.parallel_copy_from(cnew); // parallelized assignment operator
+        c.swap(cnew); // parallelized assignment operator
         t += dt; // advance the time
     }
 
