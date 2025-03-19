@@ -62,22 +62,20 @@ std::string Grid<T>::to_vtk(std::string name) {
     return xml.str();
 }
 
-template<> // for std-vector grids
+template<> // for vector fields
 std::string Grid<std::vector<double>>::to_vtk(std::string name) {
     std::stringstream xml;
-    xml << "<DataArray type=\"Float64\" Name=\"" << name 
-        << "\" NumberOfComponents=\"" << sizeZ() 
-        << "\" format=\"ascii\">" << std::endl;
-    for (size_t i = 0; i < sizeX(); i++) {
-        for (size_t j = 0; j < sizeY(); j++) {
-            for (size_t k = 0; k < sizeZ(); k++) {
+    for (std::size_t k = 0; k < sizeZ(); k++) {
+        xml << "<DataArray type=\"Float64\" Name=\"" << name << k
+            << "\" format=\"ascii\">" << std::endl;
+        for (std::size_t i = 0; i < sizeX(); i++) {
+            for (std::size_t j = 0; j < sizeY(); j++) {
                 xml << data[i][j][k] << " ";
             }
+            xml << std::endl;
         }
-        xml << std::endl;
+        xml << "</DataArray>" << std::endl;
     }
-    xml << "</DataArray>" << std::endl;
-    
     return xml.str();
 }
 
@@ -97,33 +95,20 @@ std::string Grid<Point>::to_vtk(std::string name) {
     return xml.str();
 }
 
-template<> // for gradient (vector of 2D vectors) grids
+template<> // for Point vector fields
 std::string Grid<std::vector<Point>>::to_vtk(std::string name) {
     std::stringstream xml;
-    xml << "<DataArray type=\"Float64\" Name=\"" << name 
-        << "_x\" NumberOfComponents=\"" << sizeZ() 
-        << "\" format=\"ascii\">" << std::endl;
-    for (size_t i = 0; i < sizeX(); i++) {
-        for (size_t j = 0; j < sizeY(); j++) {
-            for (size_t k = 0; k < sizeZ(); k++) {
-                xml << data[i][j][k].x << " ";
+    for (std::size_t k = 0; k < sizeZ(); k++) {
+        xml << "<DataArray type=\"Float64\" Name=\"" << name << k
+            << "\" NumberOfComponents=\"2\" format=\"ascii\">" << std::endl;
+        for (std::size_t i = 0; i < sizeX(); i++) {
+            for (std::size_t j = 0; j < sizeY(); j++) {
+                xml << data[i][j][k].x << " " << data[i][j][k].y << " ";
             }
+            xml << std::endl;
         }
-        xml << std::endl;
+        xml << "</DataArray>" << std::endl;
     }
-    xml << "</DataArray>" << std::endl;
-    xml << "<DataArray type=\"Float64\" Name=\"" << name 
-        << "_y\" NumberOfComponents=\"" << sizeZ() 
-        << "\" format=\"ascii\">" << std::endl;
-    for (size_t i = 0; i < sizeX(); i++) {
-        for (size_t j = 0; j < sizeY(); j++) {
-            for (size_t k = 0; k < sizeZ(); k++) {
-                xml << data[i][j][k].y << " ";
-            }
-        }
-        xml << std::endl;
-    }
-    xml << "</DataArray>" << std::endl;
     return xml.str();
 }
 
