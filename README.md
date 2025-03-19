@@ -1,5 +1,15 @@
 # PolyMorph
 
+For the officially released version in [Computer Physics Communications](https://www.sciencedirect.com/science/article/pii/S0010465525000840), please see the branch [release-cpc](https://github.com/MuellerNico/PolyMorph/tree/release-cpc)
+
+## Abstract
+
+PolyMorph is an extension of [PolyHoop](https://www.sciencedirect.com/science/article/pii/S0010465524000511), a 2D mechanical tissue simulation software for soft particle dynamics developed by Vetter et al. PolyMorph adds a numerical solver for reaction-advection-diffusion equations which allows the modeling of chemical signaling. 
+
+The simulation software is programmed in C++. It makes use of finite-difference approximations, explicit Euler time integration, scatter-gather interpolation between Eulerian and Lagrangian reference frames and shared memory parallelism with OpenMP.
+
+Bachelor's thesis project of Nicolas Müller, ETH Zürich.
+
 ## Installation and execution
 Use the provided makefile to compile the program. Then run the executable, specifying the number of cores available on your machine:
 ```shell
