@@ -1,0 +1,60 @@
+<VTKFile type="PolyData" version="0.1" byte_order="LittleEndian">
+    <PolyData>
+        <Piece NumberOfPoints="76" NumberOfPolys="2">
+            <CellData>
+                <DataArray type="Float64" Name="area" format="ascii">
+2.29344 2.29384 
+                </DataArray>
+                <DataArray type="Float64" Name="c1" format="ascii">
+0.0349138 0.0220674 
+                </DataArray>
+                <DataArray type="Float64" Name="c2" format="ascii">
+0.0719081 0.0735054 
+                </DataArray>
+                <DataArray type="Float64" Name="grad_c1" NumberOfComponents="2" format="ascii">
+0.00155415 -0.000871131 0.00185724 0.00870402 
+                </DataArray>
+                <DataArray type="Float64" Name="grad_c2" NumberOfComponents="2" format="ascii">
+-0.0193981 0.00031698 -0.0197819 -0.000302953 
+                </DataArray>
+                <DataArray type="Float64" Name="D1" format="ascii">
+20.1884 47.8887 
+                </DataArray>
+                <DataArray type="Float64" Name="D2" format="ascii">
+28.1376 29.476 
+                </DataArray>
+                <DataArray type="Float64" Name="k1" format="ascii">
+0.910378 0.571072 
+                </DataArray>
+                <DataArray type="Float64" Name="k2" format="ascii">
+0.1 0.1 
+                </DataArray>
+                <DataArray type="Float64" Name="k3" format="ascii">
+1 1 
+                </DataArray>
+                <DataArray type="Int64" Name="cell_type" format="ascii">
+0 1 
+                </DataArray>
+                <DataArray type="Float64" Name="perimeter" format="ascii">
+5.39846 5.39893 
+                </DataArray>
+                <DataArray type="Float64" Name="neighbors" format="ascii">
+1 1 
+                </DataArray>
+            </CellData>
+            <Points>
+                <DataArray type="Float64" Name="Points" NumberOfComponents="3" format="ascii">
+-0.948607 0.566466 0 -0.903933 0.436844 0 -0.839226 0.315933 0 -0.756125 0.206958 0 -0.656842 0.112522 0 -0.543812 0.0351566 0 -0.419901 0.0246608 0 -0.295997 0.0147441 0 -0.172115 0.00482604 0 -0.0482503 -0.00508927 0 0.0756414 -0.0150029 0 0.199529 -0.0242921 0 0.323432 0.0341492 0 0.436484 0.11161 0 0.535848 0.205997 0 0.618952 0.315099 0 0.683648 0.435976 0 0.73642 0.60014 0 0.75549 0.771478 0 0.739995 0.94324 0 0.690481 1.10854 0 0.609104 1.26076 0 0.499098 1.39385 0 0.364668 1.50243 0 0.211312 1.5821 0 0.129204 1.61017 0 0.0447011 1.62994 0 -0.0413384 1.64116 0 -0.128068 1.64375 0 -0.214641 1.63765 0 -0.30017 1.62298 0 -0.464249 1.56865 0 -0.614229 1.4828 0 -0.744005 1.36888 0 -0.84852 1.23152 0 -0.923648 1.07618 0 -0.966222 0.909077 0 -0.974637 0.736894 0 0.603342 -0.566758 0 0.55866 -0.437123 0 0.493943 -0.316202 0 0.41083 -0.20722 0 0.311533 -0.112778 0 0.198491 -0.0354078 0 0.0745772 -0.024914 0 -0.0493275 -0.0149988 0 -0.173211 -0.005082 0 -0.297077 0.0048348 0 -0.42097 0.0147502 0 -0.54486 0.0240417 0 -0.668776 -0.0344012 0 -0.781843 -0.111866 0 -0.881219 -0.206259 0 -0.964334 -0.31537 0 -1.02904 -0.436257 0 -1.08182 -0.600437 0 -1.1009 -0.771792 0 -1.0854 -0.943571 0 -1.03589 -1.10888 0 -0.954505 -1.26112 0 -0.844489 -1.39423 0 -0.710046 -1.50282 0 -0.556675 -1.5825 0 -0.474559 -1.61057 0 -0.390048 -1.63035 0 -0.304 -1.64157 0 -0.217261 -1.64416 0 -0.13068 -1.63806 0 -0.0451423 -1.62338 0 0.118952 -1.56904 0 0.268947 -1.48319 0 0.398734 -1.36925 0 0.503258 -1.23188 0 0.578393 -1.07653 0 0.620967 -0.909402 0 0.629379 -0.737201 0 
+                </DataArray>
+            </Points>
+            <Polys>
+                <DataArray type="Int64" Name="connectivity" format="ascii">
+0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67 68 69 70 71 72 73 74 75 
+                </DataArray>
+                <DataArray type="Int64" Name="offsets" format="ascii">
+38 76 
+                </DataArray>
+            </Polys>
+        </Piece>
+    </PolyData>
+</VTKFile>

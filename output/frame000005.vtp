@@ -1,0 +1,60 @@
+<VTKFile type="PolyData" version="0.1" byte_order="LittleEndian">
+    <PolyData>
+        <Piece NumberOfPoints="76" NumberOfPolys="2">
+            <CellData>
+                <DataArray type="Float64" Name="area" format="ascii">
+1.70367 1.70368 
+                </DataArray>
+                <DataArray type="Float64" Name="c1" format="ascii">
+0.0340148 0.0264667 
+                </DataArray>
+                <DataArray type="Float64" Name="c2" format="ascii">
+0.00802808 0.00825399 
+                </DataArray>
+                <DataArray type="Float64" Name="grad_c1" NumberOfComponents="2" format="ascii">
+0.00259202 0.000708125 0.00161269 0.00486787 
+                </DataArray>
+                <DataArray type="Float64" Name="grad_c2" NumberOfComponents="2" format="ascii">
+-0.00412807 0.000897177 -0.0044299 -0.000831032 
+                </DataArray>
+                <DataArray type="Float64" Name="D1" format="ascii">
+20.1884 47.8887 
+                </DataArray>
+                <DataArray type="Float64" Name="D2" format="ascii">
+28.1376 29.476 
+                </DataArray>
+                <DataArray type="Float64" Name="k1" format="ascii">
+0.910378 0.571072 
+                </DataArray>
+                <DataArray type="Float64" Name="k2" format="ascii">
+0.1 0.1 
+                </DataArray>
+                <DataArray type="Float64" Name="k3" format="ascii">
+1 1 
+                </DataArray>
+                <DataArray type="Int64" Name="cell_type" format="ascii">
+0 1 
+                </DataArray>
+                <DataArray type="Float64" Name="perimeter" format="ascii">
+4.68144 4.68147 
+                </DataArray>
+                <DataArray type="Float64" Name="neighbors" format="ascii">
+1 1 
+                </DataArray>
+            </CellData>
+            <Points>
+                <DataArray type="Float64" Name="Points" NumberOfComponents="3" format="ascii">
+-0.64792 0.432162 0 -0.617292 0.315049 0 -0.543249 0.248898 0 -0.477876 0.154714 0 -0.39407 0.0881497 0 -0.292001 0.0279437 0 -0.185289 0.0204022 0 -0.0791576 0.0100913 0 0.0206071 0.00371234 0 0.12008 -0.0051963 0 0.194459 -0.0097895 0 0.280876 -0.0173154 0 0.392881 0.0270383 0 0.48562 0.080404 0 0.5627 0.162924 0 0.644515 0.216088 0 0.692606 0.326725 0 0.755753 0.436791 0 0.794375 0.550364 0 0.817822 0.67845 0 0.781503 0.834587 0 0.744599 0.979205 0 0.695284 1.10908 0 0.582134 1.22269 0 0.409086 1.30479 0 0.310676 1.33597 0 0.205767 1.3529 0 0.100219 1.36944 0 -0.00661828 1.36961 0 -0.112883 1.3693 0 -0.214959 1.35391 0 -0.39872 1.29989 0 -0.528251 1.20537 0 -0.597275 1.08481 0 -0.656348 0.947748 0 -0.716645 0.799215 0 -0.713523 0.669039 0 -0.69314 0.550816 0 0.632781 -0.432161 0 0.602153 -0.315047 0 0.528111 -0.248895 0 0.462737 -0.154711 0 0.378929 -0.0881462 0 0.276858 -0.02794 0 0.170148 -0.0203995 0 0.0640178 -0.0100853 0 -0.0357493 -0.00370551 0 -0.135224 0.00520097 0 -0.209601 0.00978822 0 -0.296016 0.0173197 0 -0.408023 -0.0270349 0 -0.500764 -0.0804006 0 -0.577845 -0.162921 0 -0.65966 -0.216085 0 -0.707751 -0.326723 0 -0.770898 -0.436789 0 -0.809521 -0.550364 0 -0.832968 -0.67845 0 -0.796649 -0.834588 0 -0.759745 -0.979207 0 -0.71043 -1.10908 0 -0.597278 -1.2227 0 -0.424229 -1.3048 0 -0.325819 -1.33597 0 -0.220909 -1.3529 0 -0.115361 -1.36944 0 -0.00852363 -1.36961 0 0.0977417 -1.36931 0 0.199818 -1.35391 0 0.38358 -1.29989 0 0.513112 -1.20537 0 0.582136 -1.08482 0 0.641209 -0.94775 0 0.701506 -0.799216 0 0.698385 -0.669039 0 0.678002 -0.550815 0 
+                </DataArray>
+            </Points>
+            <Polys>
+                <DataArray type="Int64" Name="connectivity" format="ascii">
+0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67 68 69 70 71 72 73 74 75 
+                </DataArray>
+                <DataArray type="Int64" Name="offsets" format="ascii">
+38 76 
+                </DataArray>
+            </Polys>
+        </Piece>
+    </PolyData>
+</VTKFile>

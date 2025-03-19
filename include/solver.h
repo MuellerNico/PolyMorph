@@ -14,9 +14,9 @@
 
 #include "grid.h"
 #include "geometry.h"
-#include "domain.h"
+#include "param.h"
 
-using Reaction = std::function<std::vector<double>(const std::vector<double>& c, const std::vector<double>& k, double t)>;
+using Reaction = std::function<std::vector<double>(std::size_t p, const std::vector<double>& c, const std::vector<double>& k, double t)>;
 
 struct BoundaryCondition {
     enum class Type {
@@ -30,7 +30,7 @@ struct BoundaryCondition {
 
 struct Boundary { // boundary conditions for one species
     BoundaryCondition north, south, east, west;
-    
+
     static Boundary zeroFlux() { // default boundary condition
         return {
             {BoundaryCondition::Type::Neumann, 0},
@@ -40,130 +40,117 @@ struct Boundary { // boundary conditions for one species
         };
     }
 
-    static std::vector<Boundary> zeroFlux(size_t n) { // default boundary conditions for n species
+    static std::vector<Boundary> zeroFlux(std::size_t n) { // default boundary conditions for n species
         return std::vector<Boundary>(n, zeroFlux());
     }
 };
 
-struct Solver { 
-    Domain& domain; // rectangular simulation domain
+struct Solver {
     int Nx, Ny; // number of grid points
-    double dx; // grid spacing
     double t; // time
-    std::vector<Boundary> boundary; // boundary conditions (one Boundary per species)
+    std::vector<Boundary> boundary; // boundary conditions (one Boundary object per species)
     Reaction R; // reaction term
-    Grid<int> parent_idx; // polygon idx
+    Grid<int> parent_idx; // polygon index
     Grid<std::vector<double>> c; // concentrations
     Grid<std::vector<double>> cnew; // temporary grid for updating concentrations
     Grid<std::vector<double>> D; // diffusion coefficients
     Grid<std::vector<double>> k; // kinetic coefficients
-    Grid<Point> velocity; // velocity field
+    Grid<Point> v; // velocity field
     Grid<std::vector<Point>> grad_c; // concentration gradient
 
-    Solver(Domain& domain, const double dx, Reaction R) : domain(domain), dx(dx), t(0), R(R) {
-        this->boundary = Boundary::zeroFlux(NUM_SPECIES);
-        this->Nx = domain.width() / dx + 1;
-        this->Ny = domain.height() / dx + 1;
-        this->c = Grid<std::vector<double>>(Nx, Ny, std::vector<double>(NUM_SPECIES, 0.0));
-        this->cnew = Grid<std::vector<double>>(Nx, Ny, std::vector<double>(NUM_SPECIES, 0.0));
-        this->grad_c = Grid<std::vector<Point>>(Nx, Ny, std::vector<Point>(NUM_SPECIES, Point(0, 0)));
-        
-        std::cout << "Domain: [" << domain.x0 << ", " << domain.x1 << "] x [" << domain.y0 << ", " << domain.y1 << "]" << std::endl;
-        std::cout << "FDM solver dimensions: Nx=" << Nx << " Ny=" << Ny << " dx=" << dx << std::endl;
+    Solver(Reaction R) : t(0), R(R) {
+        boundary = Boundary::zeroFlux(NUM_SPECIES);
+        Nx = (domain.x1 - domain.x0) / dx + 1;
+        Ny = (domain.y1 - domain.y0) / dx + 1;
+        c = Grid<std::vector<double>>(Nx, Ny, std::vector<double>(NUM_SPECIES, 0));
+        cnew = Grid<std::vector<double>>(Nx, Ny, std::vector<double>(NUM_SPECIES, 0));
+        grad_c = Grid<std::vector<Point>>(Nx, Ny, std::vector<Point>(NUM_SPECIES, {0, 0}));
 
         // initialize with background values
         parent_idx = Grid<int>(Nx, Ny, -2);
         D = Grid<std::vector<double>>(Nx, Ny, D0);
         k = Grid<std::vector<double>>(Nx, Ny, k0);
-        
-        if (ADVECTION_DILUTION_EN) {
-            velocity = Grid<Point>(Nx, Ny, Point(0, 0)); // init to zero (also serves as boundary condition)
+
+        if (ADVECTION_DILUTION) {
+            v = Grid<Point>(Nx, Ny, {0, 0}); // init to zero (also serves as boundary condition)
         }
     }
 
-    /// @param dt time step: allows for independent time stepping between ensemble and solver
     void step(double dt) {
-        // precompute
-        double two_dx = 2 * dx; 
-        double dx2 = dx * dx; 
+        static constexpr double two_dx = 2 * dx;
         // Forward Euler with central differences
         #pragma omp parallel for collapse(2)
         for (int i = 0; i < Nx; i++) {
-            for (int j = 0; j < Ny; j++) {   
-                const std::vector<double> reaction = R(c(i, j), k(i, j), t);
-                for (int sp = 0; sp < NUM_SPECIES; sp++) {
-                    // dirichlet boundary conditions
-                    if      (i == 0     && boundary[sp].west.type  == BoundaryCondition::Type::Dirichlet) { cnew(i, j)[sp] = boundary[sp].west.value; continue; } 
-                    else if (i == Nx-1  && boundary[sp].east.type  == BoundaryCondition::Type::Dirichlet) { cnew(i, j)[sp] = boundary[sp].east.value; continue; } 
-                    else if (j == 0     && boundary[sp].south.type == BoundaryCondition::Type::Dirichlet) { cnew(i, j)[sp] = boundary[sp].south.value; continue; } 
-                    else if (j == Ny-1  && boundary[sp].north.type == BoundaryCondition::Type::Dirichlet) { cnew(i, j)[sp] = boundary[sp].north.value; continue; } 
+            for (int j = 0; j < Ny; j++) {
+                const std::vector<double> reaction = R(parent_idx(i, j), c(i, j), k(i, j), t);
+                for (std::size_t sp = 0; sp < NUM_SPECIES; sp++) {
+                    // Dirichlet boundary conditions
+                    if      (i == 0     && boundary[sp].west.type  == BoundaryCondition::Type::Dirichlet) { cnew(i, j)[sp] = boundary[sp].west.value; continue; }
+                    else if (i == Nx-1  && boundary[sp].east.type  == BoundaryCondition::Type::Dirichlet) { cnew(i, j)[sp] = boundary[sp].east.value; continue; }
+                    else if (j == 0     && boundary[sp].south.type == BoundaryCondition::Type::Dirichlet) { cnew(i, j)[sp] = boundary[sp].south.value; continue; }
+                    else if (j == Ny-1  && boundary[sp].north.type == BoundaryCondition::Type::Dirichlet) { cnew(i, j)[sp] = boundary[sp].north.value; continue; }
                     else {
-                        // account for neumann BDC
-                        const double n = (j == Ny-1) ? c(i, j-1)[sp] + two_dx*boundary[sp].north.value : c(i, j+1)[sp]; 
-                        const double s = (j == 0)    ? c(i, j+1)[sp] - two_dx*boundary[sp].south.value : c(i, j-1)[sp];
-                        const double e = (i == Nx-1) ? c(i-1, j)[sp] + two_dx*boundary[sp].east.value  : c(i+1, j)[sp];
-                        const double w = (i == 0)    ? c(i+1, j)[sp] - two_dx*boundary[sp].west.value  : c(i-1, j)[sp];
+                        // account for Neumann boundary conditions
+                        const double n = (j == Ny-1) ? c(i, j-1)[sp] + two_dx * boundary[sp].north.value : c(i, j+1)[sp];
+                        const double s = (j == 0)    ? c(i, j+1)[sp] - two_dx * boundary[sp].south.value : c(i, j-1)[sp];
+                        const double e = (i == Nx-1) ? c(i-1, j)[sp] + two_dx * boundary[sp].east.value  : c(i+1, j)[sp];
+                        const double w = (i == 0)    ? c(i+1, j)[sp] - two_dx * boundary[sp].west.value  : c(i-1, j)[sp];
                         // calculate diffusion term
-                        const double diffusion = D(i, j)[sp] / dx2 * (e + w + anisotropy[sp] * (n + s) - 2 * (1 + anisotropy[sp]) * c(i, j)[sp]);
+                        const double diffusion = D(i, j)[sp] / (dx * dx) * (e + w + anisotropy[sp] * (n + s) - 2 * (1 + anisotropy[sp]) * c(i, j)[sp]);
                         // update grid point
-                        cnew(i, j)[sp] = c(i, j)[sp] + dt * (diffusion + reaction[sp]); 
+                        cnew(i, j)[sp] = c(i, j)[sp] + dt * (diffusion + reaction[sp]);
                         grad_c(i, j)[sp] = {(e - w) / two_dx, (n - s) / two_dx};
-                        
-                        if(ADVECTION_DILUTION_EN) {
-                            const double advection = velocity(i, j) * grad_c(i, j)[sp]; // dot product
-                            const double dvdx = (j == Ny-1 || j == 0) ? 0 : (velocity(i, j+1).y - velocity(i, j-1).y) / two_dx;
-                            const double dvdy = (i == Nx-1 || i == 0) ? 0 : (velocity(i+1, j).x - velocity(i-1, j).x) / two_dx;
+
+                        if (ADVECTION_DILUTION) {
+                            const double advection = v(i, j) * grad_c(i, j)[sp]; // dot product
+                            const double dvdx = (j == Ny-1 || j == 0) ? 0 : (v(i, j+1).y - v(i, j-1).y) / two_dx;
+                            const double dvdy = (i == Nx-1 || i == 0) ? 0 : (v(i+1, j).x - v(i-1, j).x) / two_dx;
                             const double dilution = c(i, j)[sp] * (dvdx + dvdy);
-                            // update grid point
-                            cnew(i, j)[sp] -= dt * (advection + dilution);
-                        }                    
+                            cnew(i, j)[sp] -= dt * (advection + dilution); // update grid point
+                        }
                     }
                 }
             }
         }
-        // update state
-        c.swap(cnew); // parallelized assignment operator
+        c.swap(cnew); // update the state
         t += dt; // advance the time
     }
 
     void output(const std::size_t frame) {
-        char filename [19]; 
-        snprintf(filename, 19, "rd_frame%06zu.vts", frame);        
-        std::ofstream file(output_folder + filename);
+        char filename [21];
+        snprintf(filename, 21, "grid_frame%06zu.vts", frame);
+        std::ofstream file(output_folder + "/" + filename);
         if (!file) {
-            std::cerr << "ERROR: Could not open file " << output_folder << filename << std::endl;
+            std::cerr << "Error: Could not open file " << output_folder + "/" << filename << std::endl;
             return;
         }
         file << "<?xml version=\"1.0\"?>" << std::endl;
         file << "<VTKFile type=\"StructuredGrid\" version=\"0.1\">" << std::endl;
-        file << "<StructuredGrid WholeExtent=\"0 " << Nx-1 << " 0 " << Ny-1 << " 0 0\">" << std::endl;
-        file << "<Piece Extent=\"0 " << Nx-1 << " 0 " << Ny-1 << " 0 0\">" << std::endl;
-        // define points
-        file << "<Points>" << std::endl;
-        file << "<DataArray type=\"Float64\" NumberOfComponents=\"3\" format=\"ascii\">" << std::endl;
+        file << "    <StructuredGrid WholeExtent=\"0 " << Nx-1 << " 0 " << Ny-1 << " 0 0\">" << std::endl;
+        file << "        <Piece Extent=\"0 " << Nx-1 << " 0 " << Ny-1 << " 0 0\">" << std::endl;
+        file << "            <Points>" << std::endl;
+        file << "                <DataArray type=\"Float64\" NumberOfComponents=\"3\" format=\"ascii\">" << std::endl;
         for (int i = 0; i < Nx; i++) {
             for (int j = 0; j < Ny; j++) {
-                double x = domain.x0 + i * dx;
-                double y = domain.y0 + j * dx;
+                const double x = domain.x0 + i * dx;
+                const double y = domain.y0 + j * dx;
                 file << x << " " << y << " 0" << std::endl;
             }
         }
-        file << "</DataArray>" << std::endl;
-        file << "</Points>" << std::endl;
-        file << "<PointData Scalars=\"scalars\">" << std::endl; // start point data
-        
+        file << "                </DataArray>" << std::endl;
+        file << "            </Points>" << std::endl;
+        file << "            <PointData>" << std::endl;
         if (Output::c) file << c.to_vtk("c");
-        if (Output::grad_c) file << grad_c.to_vtk("gradient");
+        if (Output::grad_c) file << grad_c.to_vtk("grad_c");
         if (Output::parent_idx) file << parent_idx.to_vtk("parent_idx");
         if (Output::D) file << D.to_vtk("D");
         if (Output::k) file << k.to_vtk("k");
-        if (Output::velocity && ADVECTION_DILUTION_EN) file << velocity.to_vtk("velocity");
-        
-        file << "</PointData>" << std::endl;    // end of point data
-        file << "</Piece>" << std::endl;
-        file << "</StructuredGrid>" << std::endl;
+        if (Output::v && ADVECTION_DILUTION) file << v.to_vtk("v");
+        file << "            </PointData>" << std::endl;
+        file << "        </Piece>" << std::endl;
+        file << "    </StructuredGrid>" << std::endl;
         file << "</VTKFile>" << std::endl;
-        file.close();          
+        file.close();
     }
 };
 
